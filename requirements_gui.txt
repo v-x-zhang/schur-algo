@@ -1,0 +1,9 @@
+# Requirements for Schur Process GUI
+# Install with: pip install -r requirements_gui.txt
+
+matplotlib>=3.5.0
+numpy>=1.21.0
+sympy>=1.9.0
+
+# tkinter is included with Python standard library
+# No additional installation needed for tkinter

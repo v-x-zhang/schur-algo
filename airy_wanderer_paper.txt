@@ -1,0 +1,4841 @@
+MONOTONICITY AND ASYMPTOTIC SLOPES FOR AIRY WANDERER LINE
+ENSEMBLES
+EVGENI DIMITROV
+Abstract.
+Insert ab stract here.
+Contents
+1. Intro duction and main results 1
+2. Weak convergence and a˚ne shifts 2
+3. Schur pro cesses
+2
+4. Monotone couplings of Airy wanderer line ensembles 8
+5. Asymptotic slop es 8
+References
+8
+1.
+Introduction and main results
+1.1.
+Preface.
+1.2.
+The Airy wanderer line ensembles.
+The goal of this section is to give a formal de˝nition
+of the Airy wanderer line ensembles constructed in [4, 5]. Our exp osition here closely follows that
+of [5, Section 1.2]. We b egin by ˝xing the parameters of the mo del and some notation.
+De˝nition 1.1.
+We assume that we are given four sequences of non-negative real numb ers
+f
+a
++
+i
+g
+i
+
+1
+,
+f
+a
+
+i
+g
+i
+
+1
+,
+f
+b
++
+i
+g
+i
+
+1
+,
+f
+b
+
+i
+g
+i
+
+1
+such that
+(1.1)
+1
+X
+i
+=1
+(
+a
++
+i
++
+a
+
+i
++
+b
++
+i
++
+b
+
+i
+)
+<
+1
+and
+a
+
+i
+
+a
+
+i
++1
+; b
+
+i
+
+b
+
+i
++1
+for all
+i
+
+1
+;
+as well as two real parameters
+c
++
+; c
+
+. We let
+J
+
+a
+= inf
+f
+k
+
+1 :
+a
+
+k
+= 0
+g 
+1
+and
+J
+
+b
+= inf
+f
+k
+
+1 :
+b
+
+k
+= 0
+g 
+1
+. In words,
+J
+
+a
+is the largest index
+k
+such that
+a
+
+k
+>
+0
+, with the convention that
+J
+
+a
+= 0
+if all
+a
+
+k
+= 0
+and
+J
+
+a
+=
+1
+if all
+a
+
+k
+>
+0
+, and analogously for
+J
+
+b
+. For future reference, we denote
+the set of parameters satisfying the ab ove conditions by
+P
+all
+. We denote the subset of
+P
+all
+such that
+c
+
+= 0
+and
+J
+
+a
++
+J
+
+b
+<
+1
+by
+P
+n
+, and the subset of
+P
+n
+such that
+c
++
+=
+J
+
+a
+=
+J
+
+b
+= 0
+by
+P
+p os
+.
+Lastly, we de˝ne
+a
+=
+8
+>
+<
+>
+:
+0
+if
+a
+
+1
++
+b
+
+1
+>
+0
+or
+c
+
+6
+= 0
+;
+1
+if
+a
+
+1
++
+b
+
+1
+=
+c
+
+= 0
+and
+a
++
+1
+= 0
+;
+1
+=a
++
+1
+if
+a
+
+1
++
+b
+
+1
+=
+c
+
+= 0
+and
+a
++
+1
+>
+0
+;
+and
+b
+=
+8
+>
+<
+>
+:
+0
+if
+a
+
+1
++
+b
+
+1
+>
+0
+or
+c
+
+6
+= 0
+;
+
+if
+a
+
+1
++
+b
+
+1
+=
+c
+
+= 0
+and
+b
++
+1
+= 0
+;
+
+1
+=b
++
+1
+if
+a
+
+1
++
+b
+
+1
+=
+c
+
+= 0
+and
+b
++
+1
+>
+0
+:
+Observe that
+a
+2
+[0
+;
+1
+]
+and
+b
+2
+[
+
+;
+0]
+.
+Date
+: May 29, 2025.
+1
+
+
+2 MONOTONICITY AND ASY MPTOTIC SLOPES FOR AIRY WANDERER LINE EN SEMBLES
+For
+z
+2
+C
+n f
+0
+g
+we de˝ne the function
+(1.2)
+
+a;b;c
+(
+z
+) =
+e
+c
++
+z
++
+c
+
+=z
+
+1
+Y
+i
+=1
+(1 +
+b
++
+i
+z
+)(1 +
+b
+
+i
+=z
+)
+(1
+
+a
++
+i
+z
+)(1
+
+a
+
+i
+=z
+)
+:
+From (1.1) and [9, Chapter 5, Prop osition 3.2], we have that the ab ove de˝nes a meromorphic
+function on
+C
+n f
+0
+g
+whose zeros are at
+
+(
+b
++
+i
+)
+
+1
+g
+J
++
+b
+i
+=1
+and
+
+b
+
+i
+g
+J
+
+b
+i
+=1
+, while its p oles are at
+f
+(
+a
++
+i
+)
+
+1
+g
+J
++
+a
+i
+=1
+and
+f
+a
+
+i
+g
+J
+
+a
+i
+=1
+. We also observe that
+
+a;b;c
+(
+z
+)
+is analytic in
+C
+n
+[
+a
+;
+1
+)
+, and its inverse is analytic in
+C
+n
+(
+
+; b
+]
+, where
+a
+; b
+are as in De˝nition 1.1.
+The following de˝nitions present the Airy wanderer kernel, intro duced in [2], starting with the
+contours that app ear in it.
+De˝nition 1. 2.
+Fix
+a
+2
+R
+. We let
+
++
+a
+denote the union of the contours
+f
+a
++
+y e
+ˇ
+i
+=
+4
+g
+y
+2
+R
++
+and
+f
+a
++
+y e
+
+ˇ
+i
+=
+4
+g
+y
+2
+R
++
+, and
+
+
+a
+the union of the contours
+f
+a
++
+y e
+3
+ˇ
+i
+=
+4
+g
+y
+2
+R
++
+and
+f
+a
++
+y e
+
+3
+ˇ
+i
+=
+4
+g
+y
+2
+R
++
+.
+Both contours are oriented in the direction of increasing imaginary part.
+De˝nition 1.3.
+Assume the same notation as in De˝nition 1.1. For
+t
+1
+; t
+2
+; x
+1
+; x
+2
+2
+R
+we de˝ne
+K
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) =
+K
+1
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) +
+K
+2
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) +
+K
+3
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+)
+;
+with
+K
+1
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) =
+1
+2
+ˇ
+i
+Z
+
+dw
+
+e
+(
+t
+2
+
+t
+1
+)
+w
+2
++(
+t
+2
+1
+
+t
+2
+2
+)
+w
++
+w
+(
+x
+2
+
+x
+1
+)+
+x
+1
+t
+1
+
+x
+2
+t
+2
+
+t
+3
+1
+=
+3+
+t
+3
+2
+=
+3
+K
+2
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) =
+
+1
+f
+t
+2
+> t
+1
+g
+p
+4
+ˇ
+(
+t
+2
+
+t
+1
+)
+
+e
+
+(
+x
+2
+
+x
+1
+)
+2
+4(
+t
+2
+
+t
+1
+)
+
+(
+t
+2
+
+t
+1
+)(
+x
+2
++
+x
+1
+)
+2
++
+(
+t
+2
+
+t
+1
+)
+3
+12
+;
+K
+3
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+) =
+1
+(2
+ˇ
+i
+)
+2
+Z
+
++
+
+dz
+Z
+
+
+
+dw
+e
+z
+3
+=
+3
+
+x
+1
+z
+
+w
+3
+=
+3+
+x
+2
+w
+z
++
+t
+1
+
+w
+
+t
+2
+
+
+a;b;c
+(
+z
++
+t
+1
+)
+
+a;b;c
+(
+w
++
+t
+2
+)
+:
+(1.3)
+In (1.3)
+ ; 
+2
+R
+are such that
+
++
+t
+1
+< a
+and
+
++
+t
+2
+> b
+, the function
+
+a;b;c
+is as in (1.2) and the
+contours of integration in
+K
+3
+a;b;c
+are as in De˝nition 1.2. If
+
++
+
++
+t
+1
+(=
+t
+1
++ 
++
+
+)
+and
+
+
+
++
+t
+2
+(=
+t
+2
++ 
++
+
+)
+have zero or one intersection p oints, we take
+
+=
+;
+and then
+K
+1
+a;b;c
+
+0
+. Otherwise,
+
++
+
++
+t
+1
+and
+
+
+
++
+t
+2
+have exactly two intersection p oints, which are complex conjugates, and
+
+is the straight vertical
+segment that connects them with the orientation of increasing imaginary part. See Figure 1.
+The following prop osition summarizes some basic prop erties of the kernel
+K
+a;b;c
+in De˝nition 1.3.
+It was proved as [5, Lemma 1.4] under the assumption that
+c
++
+; c
+
+
+0
+; however, the pro of remains
+unchanged for all
+c
++
+; c
+
+2
+R
+, which is how we state the result b elow.
+Prop osition 1 .4.
+Assume the same notation as in De˝nition 1.1. For each
+t
+1
+; t
+2
+; x
+1
+; x
+2
+2
+R
+we have that the double integral in the de˝nition of
+K
+3
+a;b;c
+in (1.3) is convergent. The value of
+K
+a;b;c
+(
+t
+1
+; x
+1
+;
+t
+2
+; x
+2
+)
+does not depend on the choice of
+
+and
+
+as long as
+
++
+t
+1
+< a
+and
+
++
+t
+2
+> b
+.
+Moreover, for each ˝xed
+t
+1
+; t
+2
+2
+R
+we have that
+K
+a;b;c
+(
+t
+1
+;
+
+;
+t
+2
+;
+
+)
+is continuous in
+(
+x
+1
+; x
+2
+)
+2
+R
+2
+.
+2.
+Weak convergence and affine shifts
+3.
+Schur processes
+3.1.
+De˝nitions.
+In this section we de˝ne the Schur pro cesses that we work with in the present
+pap er. Our exp osition follows [5, Section 3.1], which in turn go es back to [3, 7].
+A
+partition
+is a sequence
+
+= (
+
+1
+; 
+2
+; : : :
+)
+of non-negative integers, called
+parts
+, such that
+
+1
+
+
+2
+   
+and all but ˝nitely many elements are zero. We denote the set of all partitions by
+Y
+.
+The
+weight
+of a partition
+
+is given by
+j
+
+j
+=
+
+1
++
+
+2
++
+  
+. There is a single partition of weight
+0
+, which we denote by
+;
+. We say that two partitions
+; 
+interlace
+, denoted
+
+
+
+or
+
+
+
+, if
+
+
+MONOTONICITY AND ASYMPTOTIC SLOPES FOR AIRY WANDERER LINE ENSEMBLES 3
+Re
+Im
+
++
+t
+2
+
++
+t
+1
+u
++
+u
+
+
++
+
++
+t
+1
+
+
+
++
+t
+2
+
+Figure 1.
+The ˝gure depicts the contours
+
++
+
++
+t
+1
+;
+
+
+
++
+t
+2
+when they have two inter-
+section p oints, denoted by
+u
+
+and
+u
++
+. The contour
+
+is the segment from
+u
+
+to
+u
++
+.
+
+1
+
+
+1
+
+
+2
+
+
+2
+   
+. For two partitions
+; 
+, we de˝ne the (skew) Schur p olynomial in a single
+variable by
+(3.1)
+s
+
+(
+x
+) =
+1
+f
+
+
+
+g 
+x
+j
+
+
+
+j
+;
+and in several variables by
+(3.2)
+s
+
+(
+x
+1
+; : : : ; x
+n
+) =
+X
+
+1
+;:::;
+n
+
+1
+2
+Y
+n
+Y
+i
+=1
+s
+
+i
+=
+i
+
+1
+(
+x
+i
+)
+;
+where
+
+0
+=
+
+and
+
+n
+=
+
+. If
+
+=
+;
+in (3.2), we drop it from the notation and simply write
+s
+
+in
+place of
+s
+=
+;
+. With the ab ove notation in place we can de˝ne our measures.
+De˝nition 3.1.
+Fix
+M ; N
+2
+N
+and supp ose that
+X
+= (
+x
+1
+; : : : ; x
+M
+)
+,
+Y
+= (
+y
+1
+; : : : ; y
+N
+)
+are such
+that
+x
+i
+; y
+j
+
+0
+and
+x
+i
+y
+j
+<
+1
+for all
+i
+= 1
+; : : : ; M
+, and
+j
+= 1
+; : : : ; N
+. With this data we de˝ne the
+measure
+(3.3)
+P
+X ;Y
+(
+
+1
+; : : : ; 
+M
+) =
+M
+Y
+i
+=1
+N
+Y
+j
+=1
+(1
+
+x
+i
+y
+j
+)
+
+M
+Y
+i
+=1
+s
+
+i
+=
+i
+
+1
+(
+x
+i
+)
+
+s
+
+M
+(
+y
+1
+; : : : ; y
+M
+)
+;
+where
+
+0
+=
+;
+and
+
+i
+2
+Y
+. We call the measure
+P
+X ;Y
+the
+Schur process
+with parameters
+X ; Y
+.
+Remark
+3.2
+.
+Note that, in view of (3.1),
+P
+X ;Y
+is supp orted on sequences
+(
+
+1
+; : : : ; 
+M
+)
+such that
+; 
+
+1
+
+
+2
+    
+
+M
+
+1
+
+
+M
+:
+3.2.
+Schur dy nam ics.
+In this section we describ e a sampling algorithm for the Schur pro cesses in
+De˝nition 3.1. This algorithm was intro duced in [1], and it is based on certain Markov dynamics on
+the Schur pro cesses that are based on sequential up date. At a high level, the sampling algorithm al-
+lows us to sequentially build
+(
+
+(
+n;
+1)
+; : : : ; 
+(
+n; M
+))
+, distributed according to
+P
+X ;Y
+n
+for
+n
+= 1
+; : : : ; N
+,
+where
+Y
+n
+= (
+y
+1
+; : : : ; y
+n
+)
+, by evolving the parts of
+
+(
+n; j
+)
+. This evolution of the parts is based on
+certain truncated geometric random variables, which we intro duce next.
+
+
+4 MONOTONICITY AND ASY MPTOTIC SLOPES FOR AIRY WANDERER LINE EN SEMBLES
+De˝nition 3.3.
+Fix
+q
+2
+[0
+;
+1)
+,
+a
+2
+Z
+, and
+b
+2
+Z
+[ f1g
+such that
+a
+
+b
+. With this data we de˝ne
+the probability mass function
+(3.4)
+p
+(
+x
+j
+a; b; q
+) =
+q
+x
+P
+b
+y
+=
+a
+q
+y
+for
+x
+2
+Z
+; a
+
+x
+
+b;
+and
+p
+(
+x
+j
+a; b; q
+) = 0
+otherwise.
+We also de˝ne the corresp onding cumulative distribution function (cdf ) by
+(3.5)
+F
+(
+x
+j
+a; b; q
+) =
+X
+y
+
+x
+p
+(
+y
+j
+a; b; q
+) =
+8
+>
+<
+>
+:
+0
+if
+x < a
+1
+if
+x
+
+b
+1
+
+q
+b
+x
+
+a
++1
+1
+
+q
+b
+
+a
++1
+if
+x
+2
+(
+a; b
+)
+:
+Remark
+3.4
+.
+In words, the distribution
+p
+(
+x
+j
+a; b; q
+)
+in De˝nition 3.3 is just a geometric distribution
+with parameter
+q
+, conditioned to b e inside
+[0
+; b
+
+a
+]
+, and translated by
+a
+.
+We next intro duce the the sampling algorithm.
+Sampling algorithm.
+Assume
+M ; N ; X ; Y
+are as in De˝nition 3.1. We pro ceed to sample
+f
+
+(
+n; m
+) :
+m
+= 0
+; : : : ; M ; n
+= 0
+; : : : ; N
+g
+as follows.
+1.
+ Initialization. We set
+
+(0
+; m
+) =
+;
+=
+
+(
+n;
+0)
+for
+m
+= 0
+; : : : ; M
+and
+n
+= 0
+; : : : ; N
+.
+2.
+ Up date
+n
+!
+n
++ 1
+. Assume that
+(
+
+(
+n;
+1)
+; : : : ; 
+(
+n; M
+))
+have already b een sampled. We
+pro ceed to sequentially sample
+
+(
+n
++ 1
+; m
+)
+for
+m
+= 1
+; : : : ; M
+as follows.
+3.
+ Sampling
+
+(
+n
++ 1
+; m
+)
+. For
+i
+2
+N
+, we de˝ne
+a
+i
+= max(
+
+i
+(
+n
++ 1
+; m
+
+1)
+; 
+i
+(
+n; m
+))
+and
+b
+i
+= min(
+
+i
+
+1
+(
+n
++ 1
+; m
+
+1)
+; 
+i
+
+1
+(
+n; m
+))
+, with the convention
+b
+1
+=
+1
+. Let
+X
+i
+(
+n
++ 1
+; m
+)
+b e
+indep endent random variables with distributions
+p
+(
+j
+a
+i
+; b
+i
+; x
+m
+y
+n
++1
+)
+as in De˝nition 3.3, and
+set
+
+i
+(
+n
++ 1
+; m
+) =
+X
+i
+(
+n
++ 1
+; m
+)
+.
+Remark
+3.5
+.
+By induction on
+m
++
+n
+, one directly shows that
+
+i
+(
+n; m
+) = 0
+for all
+i >
+min(
+m; n
+)
+.
+In particular, in the third step of the sampling algorithm we only need to generate ˝nitely many
+variables
+X
+i
+(
+n
++ 1
+; m
+)
+for
+i
+= 1
+; : : : ;
+min(
+m; n
+)
+, making the algorithm implementable on a computer.
+Remark
+3.6
+.
+One directly observes from the ab ove algorithm that if
+0
+
+m
+1
+
+m
+2
+
+M
+, and
+0
+
+n
+1
+
+n
+2
+
+N
+, then
+
+(
+n
+1
+; m
+1
+)
+
+
+(
+n
+2
+; m
+2
+)
+in the sense that
+
+i
+(
+m
+1
+; n
+1
+)
+
+
+i
+(
+m
+2
+; n
+2
+)
+for
+i
+
+1
+.
+The key result we require ab out the ab ove sampling algorithm is contained in the following
+prop osition, which is a sp ecial case of [1, Theorem 10 and Remark 12] (applied to the sp ecializations
+in [1, Example 9]).
+Prop osition 3.7.
+Assume the same notation as in De˝nition 3.1. Suppose that
+f
+
+(
+n; m
+) :
+m
+=
+0
+; : : : ; M ; n
+= 0
+; : : : ; N
+g
+are as in the above sampling algorithm. Then,
+(
+
+(
+N ;
+1)
+; : : : ; 
+(
+N ; M
+))
+is
+distributed according to
+P
+X ;Y
+.
+3.3.
+Quantile functio ns.
+Supp ose that
+F
+is a cdf on
+R
+. We de˝ ne the quantile function
+Q
+asso ciated with
+F
+via
+(3.6)
+Q
+(
+u
+) = inf
+f
+t
+:
+u
+
+F
+(
+t
+)
+g
+for all
+u
+2
+(0
+;
+1)
+:
+The following prop osition summarizes the prop erties we require ab out
+Q
+. Each statement b elow is
+either proved in [8, Sections 11.4, 11a] or follows immediately from statements there.
+Prop osition 3.8.
+Suppose that
+F
+is a cdf on
+R
+and
+Q
+is as in (3.6). Then, the fol lowing al l hold.
+P1.
+ The function
+Q
+is increasing on
+(0
+;
+1)
+.
+P2.
+Q
+(
+u
+)
+
+t
+if and only if
+u
+
+F
+(
+t
+)
+for each
+u
+2
+(0
+;
+1)
+and
+t
+2
+R
+.
+P3.
+ If
+U
+is a uniform random variable on
+(0
+;
+1)
+, then
+X
+=
+Q
+(
+U
+)
+has distribution function
+F
+.
+P4.
+ Let
+F
+1
+; F
+2
+be two cdfs on
+R
+, with associated quantile functions
+Q
+1
+; Q
+2
+. If
+F
+2
+(
+t
+)
+
+F
+1
+(
+t
+)
+for
+al l
+t
+2
+R
+, then
+Q
+1
+(
+u
+)
+
+Q
+2
+(
+u
+)
+for al l
+u
+2
+(0
+;
+1)
+.
+
+
+MONOTONICITY AND ASYMPTOTIC SLOPES FOR AIRY WANDERER LINE ENSEMBLES 5
+The key result we show in this section is that for certain choices of parameters, we can monoton-
+ically couple two distributions as in De˝nition 3.3.
+Lemma 3.9 .
+Suppose that
+q
+1
+; q
+2
+2
+[0
+;
+1)
+,
+a
+1
+; a
+2
+2
+Z
+,
+b
+1
+; b
+2
+2
+Z
+[ f1g
+satisfy
+a
+1
+
+b
+1
+,
+a
+2
+
+b
+2
+,
+q
+1
+
+q
+2
+,
+a
+1
+
+a
+2
+, and
+b
+1
+
+b
+2
+. For
+i
+= 1
+;
+2
+we let
+F
+i
+(
+x
+) =
+F
+(
+x
+j
+a
+i
+; b
+i
+; q
+i
+)
+be the cdfs from (3.5), and
+let
+Q
+i
+denote the corresponding quantile functions. Let
+U
+be a uniform
+(0
+;
+1)
+random variable and
+set
+X
+i
+=
+Q
+i
+(
+U
+)
+. Then,
+X
+i
+has distribution
+F
+i
+for
+i
+= 1
+;
+2
+and
+X
+1
+
+X
+2
+.
+Proof.
+The fact that
+X
+i
+has distribution
+F
+i
+for
+i
+= 1
+;
+2
+follows from prop erty P3 in Prop osition 3.8.
+From prop erty P4 in Prop osition 3.8 and the fact that
+F
+i
+are constant on each interval
+(
+a; a
++ 1)
+for
+a
+2
+Z
+, we see that to show that
+X
+1
+
+X
+2
+, it su˚ces to prove that for each
+x
+2
+Z
+(3.7)
+F
+2
+(
+x
+)
+
+F
+1
+(
+x
+)
+:
+If
+x < a
+2
+, we see that (3.7) trivially holds as the left side is
+0
+, and if
+x
+
+b
+1
+, then it trivially holds
+as the right side is
+1
+. We may thus assume that
+a
+2
+
+x
+
+b
+1
+, in which case from (3.5) we see that
+(3.7) is equivalent to
+1
+
+q
+x
+
+a
+2
++1
+2
+1
+
+q
+b
+2
+
+a
+2
++1
+2
+
+1
+
+q
+x
+
+a
+1
++1
+1
+1
+
+q
+b
+1
+
+a
+1
++1
+1
+:
+The latter is clear if
+q
+1
+= 0
+(as then the right side is equal to
+1
+), and so we may assume
+q
+1
+>
+0
+.
+Clearing denominators and multiplying b oth sides by
+q
+a
+1
+1
+q
+a
+2
+2
+, the ab ove b ecomes equivalent to
+(3.8)
+0
+
+G
+(
+x
+j
+a
+1
+; b
+1
+; q
+1
+; a
+2
+; b
+2
+; q
+2
+)
+for
+a
+2
+
+x
+
+b
+1
+;
+where
+G
+(
+x
+j
+a
+1
+; b
+1
+; q
+1
+; a
+2
+; b
+2
+; q
+2
+) =
+q
+a
+1
+1
+q
+x
++1
+2
+
+q
+b
+1
++1
+1
+q
+x
++1
+2
++
+q
+b
+1
++1
+1
+q
+a
+2
+2
+
+q
+x
++1
+1
+q
+a
+2
+2
+
+q
+a
+1
+1
+q
+b
+2
++1
+2
++
+q
+x
++1
+1
+q
+b
+2
++1
+2
+:
+By a direct computation we have
+G
+(
+x
+j
+a
+1
+; b
+1
+; q
+1
+; a
+2
+; b
+2
+; q
+2
+)
+
+G
+(
+x
+j
+a
+2
+; b
+1
+; q
+1
+; a
+2
+; b
+1
+; q
+2
+)
+;
+= (
+q
+a
+1
+1
+
+q
+a
+2
+1
+)(
+q
+x
++1
+2
+
+q
+b
+2
++1
+2
+) + (
+q
+b
+1
++1
+2
+
+q
+b
+2
++1
+2
+)(
+q
+a
+2
+1
+
+q
+x
++1
+1
+)
+
+0
+;
+where in the last inequality we used that
+q
+1
+; q
+2
+2
+(0
+;
+1)
+,
+a
+1
+
+a
+2
+
+x
+
+b
+1
+
+b
+2
+. In particular, we
+conclude that to show (3.8), it su˚ces to prove that for
+a
+
+x
+
+b
+and
+0
+< q
+1
+
+q
+2
+<
+1
+, we have
+(3.9)
+0
+
+G
+(
+x
+j
+a; b; q
+1
+; a; b; q
+2
+)
+:
+If
+b
+=
+1
+, we note that
+G
+(
+x
+j
+a;
+1
+; q
+1
+; a;
+1
+; q
+2
+) =
+q
+a
+1
+q
+x
++1
+2
+
+q
+x
++1
+1
+q
+a
+2
+=
+q
+a
+1
+q
+x
++1
+2
+(1
+
+(
+q
+1
+=q
+2
+)
+x
++1
+
+a
+)
+;
+which clearly implies (3.9), as
+q
+2
+
+q
+1
+, and so we may assume that
+b <
+1
+.
+We ˝nally observe that
+(
+x
+) =
+G
+(
+x
+j
+a; b; q
+1
+; a; b; q
+2
+)
+
+G
+(
+x
+
+1
+j
+a; b; q
+1
+; a; b; q
+2
+) = (1
+
+q
+2
+)
+q
+x
+2
+(
+q
+b
++1
+1
+
+q
+a
+1
+) + (1
+
+q
+1
+)
+q
+x
+1
+(
+q
+a
+2
+
+q
+b
++1
+2
+)
+:
+The latter shows that
+(
+x
+)
+
+0
+if and only if
+(1
+
+q
+2
+)
+q
+x
+2
+(
+q
+a
+1
+
+q
+b
++1
+1
+)
+
+(1
+
+q
+1
+)
+q
+x
+1
+(
+q
+a
+2
+
+q
+b
++1
+2
+)
+()
+(
+q
+2
+=q
+1
+)
+x
+
+(1
+
+q
+1
+)(
+q
+a
+2
+
+q
+b
++1
+2
+)
+(1
+
+q
+2
+)(
+q
+a
+1
+
+q
+b
++1
+1
+)
+:
+As
+q
+2
+
+q
+1
+, we see that
+(
+q
+2
+=q
+1
+)
+x
+is increasing in
+x
+, and so we either have
+(
+x
+)
+
+0
+for all
+x
+=
+a; a
++ 1
+; : : : ; b
+, or
+(
+x
+)
+>
+0
+for
+x
+=
+a; a
++ 1
+; : : : ; x
+
+and
+(
+x
+)
+
+0
+for
+x
+=
+x
+
++ 1
+; : : : ; b;
+for some
+x
+
+2
+[
+a; b
+]
+\
+Z
+. In b oth cases, we see that
+G
+(
+x
+j
+a; b; q
+1
+; a; b; q
+2
+)
+is minimal on
+[
+a
+
+1
+; b
+]
+when
+x
+=
+a
+
+1
+, or
+x
+=
+b
+. Since by direct computation
+G
+(
+a
+
+1
+j
+a; b; q
+1
+; a; b; q
+2
+) = 0 =
+G
+(
+b
+j
+a; b; q
+1
+; a; b; q
+2
+)
+;
+we conclude (3.9) and hence the lemma.
+
+
+
+6 MONOTONICITY AND ASY MPTOTIC SLOPES FOR AIRY WANDERER LINE EN SEMBLES
+3.4.
+Monotone couplings of Schur pro cesses.
+In this section we establish two typ es of mono-
+tone couplings for the Schur pro cesses in De˝nition 3.1. They are b oth established by appropriately
+coupling the Schur dynamics in Section 3.2 using Lemma 3.9. Our ˝rst result is as follows.
+Prop osition 3.10.
+Fix
+M ; N
+2
+N
+, and let
+(3.10)
+P
+M ;N
+=
+f
+(
+~x; ~y
+)
+2
+[0
+;
+1
+)
+M
+
+[0
+;
+1
+)
+N
+:
+x
+i
+y
+j
+<
+1
+for
+i
+= 1
+; : : : ; M ; j
+= 1
+; : : : ; N
+g
+:
+There exists a probability space
+(
+
+;
+F
+;
+P
+)
+and a family of random sequ ences
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+2
+Y
+M
+;
+indexed by
+(
+X ; Y
+)
+2 P
+M ; N
+, so that the fol lowing hold. Under
+P
+the distribution of the sequence
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+is
+P
+X ;Y
+as in De˝ nition 3.1. In addition, we have for each
+(
+X ; Y
+)
+2
+P
+M ; N
+;
+(
+~
+X ;
+~
+Y
+)
+2 P
+M ;N
+,
+!
+2
+
+
+,
+k
+2
+N
+, and
+j
+2 f
+1
+; : : : ; M
+g
+that
+(3.11)
+
+j
+k
+[
+X ; Y
+](
+!
+)
+
+
+j
+k
+[
+~
+X ;
+~
+Y
+](
+!
+)
+;
+provided that
+x
+i
+y
+j
+
+~
+x
+i
+~
+y
+j
+for al l
+i
+= 1
+; : : : ; M
+and
+j
+= 1
+; : : : ; N
+.
+Remark
+3.11
+.
+Observe that from (3.11), we have in particular
+(3.12)
+k
+X
+i
+=1
+
+j
+i
+[
+X ; Y
+](
+!
+)
+
+k
+X
+i
+=1
+
+j
+i
+[
+~
+X ;
+~
+Y
+](
+!
+)
+:
+In [5, Prop osition 3.7] we established a monotone coupling of Schur pro cesses, which ensures (3.12),
+and is based on the
+Robinson-Schensted-Knuth (RSK)
+corresp ondence and
+Greene's theorem
+. It is
+worth p ointing out that the coupling in Prop osition 3.10 is di˙erent from the one in [5, Prop osition
+3.7], for which (3.11) may fail for general
+k
+, see [5, Remark 3.9].
+Proof.
+Let
+(
+
+;
+F
+;
+P
+)
+b e any probability space that supp orts
+f
+U
+(
+n; m; k
+) :
+m; n; k
+2
+N
+g
+, where the
+latter are i.i.d. uniform
+(0
+;
+1)
+random variables. We pro ceed to de˝ne
+f
+
+[
+X ; Y
+](
+n; m
+) :
+m
+=
+0
+; : : : ; M ; n
+= 0
+; : : : ; N
+g
+using the sampling algorithm from Section 3.2. We start by setting
+
+[
+X ; Y
+](0
+; m
+) =
+;
+=
+
+[
+X ; Y
+](
+n;
+0)
+for
+m
+= 0
+; : : : ; M
+and
+n
+= 0
+; : : : ; N
+. If
+
+[
+X ; Y
+](
+n
+
+1
+; m
+)
+and
+
+[
+X ; Y
+](
+n; m
+
+1)
+have b een constructed, we set for
+k
+
+1
+(3.13)
+
+k
+[
+X ; Y
+](
+n; m
+) =
+Q
+n;m
+k
+[
+X ; Y
+](
+U
+(
+n; m; k
+))
+;
+where
+Q
+n;m
+k
+[
+X ; Y
+]
+is the quantile function of the distribution
+F
+(
+j
+a
+k
+; b
+k
+; q
+)
+from (3.5) with
+a
+k
+= max(
+
+k
+[
+X ; Y
+](
+n; m
+
+1)
+; 
+k
+[
+X ; Y
+](
+n
+
+1
+; m
+))
+;
+b
+k
+= min(
+
+k
+
+1
+[
+X ; Y
+](
+n; m
+
+1)
+; 
+k
+
+1
+[
+X ; Y
+](
+n
+
+1
+; m
+))
+; q
+=
+x
+m
+y
+n
+;
+(3.14)
+where as b efore
+b
+1
+=
+1
+. Finally, we set
+
+i
+[
+X ; Y
+] =
+
+[
+X ; Y
+](
+N ; i
+)
+for
+i
+= 1
+; : : : ; M
+. From Lemma
+3.9, we know that
+
+k
+[
+X ; Y
+](
+n; m
+)
+has distribution
+F
+(
+j
+a
+k
+; b
+k
+; q
+)
+, and so from Prop osition 3.7, we
+conclude that under
+P
+the distribution of the sequence
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+is
+P
+X ;Y
+.
+What remains is to verify (3.11), for which it su˚ces to show that if
+0
+
+m
+
+M ;
+0
+
+n
+
+N
+(3.15)
+
+k
+[
+X ; Y
+](
+n; m
+)(
+!
+)
+
+
+k
+[
+~
+X ;
+~
+Y
+](
+n; m
+)(
+!
+)
+:
+Note that (3.15) holds trivially when
+m
+= 0
+or
+n
+= 0
+, as b oth sides are equal to zero. Assuming
+that (3.15) holds when
+(
+n; m
+)
+is replaced by
+(
+n
+
+1
+; m
+)
+or
+(
+n; m
+
+1)
+, we see that
+(3.16)
+a
+k
+
+~
+a
+k
+; b
+k
+
+~
+b
+k
+; q
+=
+x
+m
+y
+n
+
+~
+x
+m
+~
+y
+n
+= ~
+q ;
+where
+a
+k
+; b
+k
+are as in (3.14) and
+~
+a
+k
+;
+~
+b
+k
+are as in (3.14) with
+X ; Y
+replaced with
+~
+X ;
+~
+Y
+. From Lemma
+3.9 we conclude that for
+k
+
+1
+Q
+n;m
+k
+[
+X ; Y
+](
+U
+(
+n; m; k
+))
+
+Q
+n;m
+k
+[
+~
+X ;
+~
+Y
+](
+U
+(
+n; m; k
+))
+;
+which together with (3.13) shows that (3.15) holds for
+(
+n; m
+)
+. The fact that (3.15) holds for all
+0
+
+m
+
+M ;
+0
+
+n
+
+N
+now follows by induction on
+m
++
+n
+.
+
+
+
+MONOTONICITY AND ASYMPTOTIC SLOPES FOR AIRY WANDERER LINE ENSEMBLES 7
+We end this section with our second monotone coupling result for Schur pro cesses.
+Prop osition 3.12.
+Fix
+M ; N
+2
+N
+,
+A; B
+2
+Z
+
+0
+, and let
+P
+M ;N
+be as in (3.10). There is a probability
+space
+(
+
+;
+F
+;
+P
+)
+and two families of random sequences
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+;
+(
+~
+
+1
+[
+X ; Y
+]
+; : : : ;
+~
+
+M
+[
+X ; Y
+])
+2
+Y
+M
+;
+indexed by
+(
+X ; Y
+)
+2 P
+M ;N
+, so that the fol lowing hold. Under
+P
+the distribution of the sequences
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+and
+(
+~
+
+1
+[
+X ; Y
+]
+; : : : ;
+~
+
+M
+[
+X ; Y
+])
+is
+P
+X ;Y
+as in De˝nition 3.1. In addition,
+we have for each
+(
+X ; Y
+)
+2 P
+M ; N
+;
+(
+~
+X ;
+~
+Y
+)
+2 P
+M ;N
+,
+!
+2
+
+
+,
+k
+2
+N
+, and
+j
+2 f
+1
+; : : : ; M
+g
+that
+(3.17)
+
+j
+k
++max(
+A;B
+)
+[
+X ; Y
+](
+!
+)
+
+~
+
+j
+k
+[
+~
+X ;
+~
+Y
+](
+!
+)
+;
+provided that
+x
+i
++
+A
+y
+j
++
+B
+
+~
+x
+i
+~
+y
+j
+for al l
+i
+= 1
+; : : : ; M
+
+A
+and
+j
+= 1
+; : : : ; N
+
+B
+.
+Proof.
+Let
+(
+
+;
+F
+;
+P
+)
+b e any probability space that supp orts
+f
+U
+(
+n; m; k
+) :
+m; n; k
+2
+N
+g
+, where the
+latter are i.i.d. uniform
+(0
+;
+1)
+random variables. De˝ne further the random variables
+(3.18)
+~
+U
+(
+n; m; k
+) =
+U
+(
+n
++
+B ; m
++
+A; k
++ max(
+A; B
+))
+;
+which we observe are again i.i.d. uniform
+(0
+;
+1)
+. As in the pro of of Prop osition 3.10, we construct
+f
+
+[
+X ; Y
+](
+n; m
+) :
+m
+= 0
+; : : : ; M ; n
+= 0
+; : : : ; N
+g
+and
+f
+~
+
+[
+X ; Y
+](
+n; m
+) :
+m
+= 0
+; : : : ; M ; n
+= 0
+; : : : ; N
+g
+using the sampling algorithm from Section 3.2. We start by setting
+
+[
+X ; Y
+](0
+; m
+) =
+
+[
+X ; Y
+](
+n;
+0) =
+~
+
+[
+X ; Y
+](0
+; m
+) =
+~
+
+[
+X ; Y
+](
+n;
+0) =
+;
+for
+m
+= 0
+; : : : ; M
+and
+n
+= 0
+; : : : ; N
+. If
+
+[
+X ; Y
+](
+n
+
+1
+; m
+)
+,
+
+[
+X ; Y
+](
+n; m
+
+1)
+,
+~
+
+[
+X ; Y
+](
+n
+
+1
+; m
+)
+,
+~
+
+[
+X ; Y
+](
+n; m
+
+1)
+have b een constructed, we set for
+k
+
+1
+(3.19)
+
+k
+[
+X ; Y
+](
+n; m
+) =
+Q
+n;m
+k
+[
+X ; Y
+](
+U
+(
+n; m; k
+))
+and
+~
+
+k
+[
+X ; Y
+](
+n; m
+) =
+~
+Q
+n;m
+k
+[
+X ; Y
+](
+~
+U
+(
+n; m; k
+))
+;
+where
+Q
+n;m
+k
+[
+X ; Y
+]
+is the quantile function of the distribution
+F
+(
+j
+a
+k
+; b
+k
+; q
+)
+from (3.5) with
+a
+k
+; b
+k
+; q
+as in (3.14), and
+~
+Q
+n;m
+k
+[
+X ; Y
+]
+is the quantile function of the distribution
+F
+(
+j
+~
+a
+k
+;
+~
+b
+k
+; q
+)
+with
+~
+a
+k
+;
+~
+b
+k
+as in (3.14) but with
+
+replaced with
+~
+
+. Finally, we set
+
+i
+[
+X ; Y
+] =
+
+[
+X ; Y
+](
+N ; i
+)
+and
+~
+
+i
+[
+X ; Y
+] =
+~
+
+[
+X ; Y
+](
+N ; i
+)
+for
+i
+= 1
+; : : : ; M
+, and note that from Prop osition 3.7, we have that under
+P
+the
+distribution of the sequences
+(
+
+1
+[
+X ; Y
+]
+; : : : ; 
+M
+[
+X ; Y
+])
+and
+(
+~
+
+1
+[
+X ; Y
+]
+; : : : ;
+~
+
+M
+[
+X ; Y
+])
+is
+P
+X ;Y
+.
+What remains is to verify (3.17), for which it su˚ces to show that if
+0
+
+m
+
+M
+,
+0
+
+n
+
+N
+(3.20)
+
+k
++max(
+A;B
+)
+[
+X ; Y
+](
+n; m
+)(
+!
+)
+
+~
+
+k
+[
+~
+X ;
+~
+Y
+](
+m; n
+)(
+!
+)
+:
+Note that (3.20) trivially holds if
+0
+
+n
+
+B
+or
+0
+
+m
+
+A
+as then the left side is equal to zero,
+cf. Remark 3.5. Hence, we only need to show (3.20) when
+A
++ 1
+
+m
+
+M
+, and
+B
++ 1
+
+n
+
+N
+.
+Using that
+
+[
+~
+X ;
+~
+Y
+](
+n; m
+)
+
+
+[
+~
+X ;
+~
+Y
+](
+n
+0
+; m
+0
+)
+, when
+n
+
+n
+0
+and
+m
+
+m
+0
+, cf. R emark 3.6, we see that
+it su˚ces to show
+(3.21)
+
+k
++max(
+A;B
+)
+[
+X ; Y
+](
+n
++
+B ; m
++
+A
+)(
+!
+)
+
+~
+
+k
+[
+~
+X ;
+~
+Y
+](
+n; m
+)(
+!
+)
+;
+for all
+k
+
+1
+,
+n
+= 0
+; : : : ; N
+
+B
+,
+m
+= 0
+; : : : ; M
+
+A
+. Note that (3.21) holds trivially when
+m
+= 0
+or
+n
+= 0
+, as b oth sides are equal to zero. Assuming that (3.21) holds when
+(
+n; m
+)
+is replaced by
+(
+n
+
+1
+; m
+)
+or
+(
+n; m
+
+1)
+, we see that
+(3.22)
+a
+k
++max(
+A;B
+)
+
+~
+a
+k
+; b
+k
++max(
+A;B
+)
+
+~
+b
+k
+; q
+=
+x
+m
++
+A
+y
+n
++
+B
+
+~
+x
+m
+~
+y
+n
+= ~
+q ;
+where
+a
+k
++max(
+A;B
+)
+; b
+k
++max(
+A;B
+)
+are as in (3.14) with
+m
+replaced with
+m
++
+A
+and
+n
+replaced with
+n
++
+B
+, and
+~
+a
+k
+;
+~
+b
+k
+are as in (3.14) with
+X ; Y
+replaced with
+~
+X ;
+~
+Y
+, and
+
+replaced with
+~
+
+. From
+Lemma 3.9 and (3.18) we conclude that for
+k
+
+1
+Q
+n
++
+B ;m
++
+A
+k
++max(
+A;B
+)
+[
+X ; Y
+](
+U
+(
+n
++
+B ; m
++
+A; k
++ max(
+A; B
+)))
+=
+Q
+n
++
+B ;m
++
+A
+k
++max(
+A;B
+)
+[
+X ; Y
+](
+~
+U
+(
+n; m; k
+))
+
+~
+Q
+n;m
+k
+[
+~
+X ;
+~
+Y
+](
+~
+U
+(
+n; m; k
+))
+;
+
+
+8 MONOTONICITY AND ASY MPTOTIC SLOPES FOR AIRY WANDERER LINE EN SEMBLES
+which together with (3.19) shows that (3.21) holds for
+(
+n; m
+)
+. The fact that (3.21) holds for all
+0
+
+m
+
+M
+
+A;
+0
+
+n
+
+N
+
+B
+now follows by induction on
+m
++
+n
+.
+
+3.5.
+Convergence of Schur pro cesses.
+In this section we state a weak convergence result ab out
+the Schur pro cesses in De˝nition 3.7, which was shown in [6]. We b egin by explaining how we scale
+our parameters in the following de˝nition.
+De˝nition 3.13.
+We ˝x parameters
+(
+a; b; c
+)
+2 P
+p os
+as in De˝nition 1.1. We ˝x
+q
+2
+(0
+;
+1)
+and set
+(3.23)
+˙
+q
+=
+q
+1
+=
+3
+(1 +
+q
+)
+1
+=
+3
+1
+
+q
+; p
+=
+q
+1
+
+q
+; ˙
+=
+p
+p
+(1 +
+p
+)
+;
+and
+f
+q
+=
+q
+1
+=
+3
+2(1 +
+q
+)
+2
+=
+3
+:
+For
+N
+2
+N
+we consider two numb ers
+A
+N
+; B
+N
+and sequences
+f
+x
+N
+i
+g
+i
+
+1
+and
+f
+y
+N
+i
+g
+i
+
+1
+such that
+x
+N
+i
+= 1
+
+1
+N
+1
+=
+3
+b
++
+i
+˙
+q
+for
+i
+= 1
+; : : : ; B
+N
+, and
+y
+N
+i
+= 1
+
+1
+N
+1
+=
+3
+a
++
+i
+˙
+q
+for
+i
+= 1
+; : : : ; A
+N
+;
+(3.24)
+where
+B
+N
+
+min
+
+b
+N
+1
+=
+12
+c
+; J
++
+b
+
+is the largest integer such that
+x
+N
+B
+N
+
+q
+, and
+A
+N
+
+min
+
+b
+N
+1
+=
+12
+c
+; J
++
+a
+
+is the largest integer such that
+y
+N
+A
+N
+
+q
+. Here, we use the convention
+x
+N
+0
+=
+y
+N
+0
+= 1
+so that
+A
+N
+= 0
+and
+B
+N
+= 0
+are p ossible. We also have
+x
+N
+i
+=
+q
+for
+i > B
+N
+and
+y
+N
+i
+=
+q
+for
+i > A
+N
+.
+(3.25)
+Note that if
+M ; N
+2
+N
+we can de˝ne the ascending Schur pro cess in De˝nition 3.7 with parameters
+X
+= (
+x
+N
+1
+; : : : ; x
+N
+M
+)
+and
+Y
+= (
+y
+N
+1
+; : : : ; y
+N
+N
+)
+as ab ove, since
+x
+N
+i
+; y
+N
+i
+2
+[
+q ;
+1)
+for all
+i
+2
+N
+.
+In the sequel we assume the same notation as in De˝nition 3.13. We also assume that
+M
+N
+
+N
++
+N
+3
+=
+4
++ 1
+and let
+P
+N
+b e the measure
+P
+X ;Y
+from De˝nition 3.7 with
+M
+=
+M
+N
+,
+x
+i
+=
+x
+N
+i
+for
+i
+2
+J
+1
+; M
+N
+K
+,
+y
+i
+=
+y
+N
+i
+for
+i
+2
+J
+1
+; N
+K
+. If
+f
+
+j
+i
+:
+j
+= 1
+; : : : ; M
+N
+; i
+
+1
+g
+has distribution
+P
+N
+, we de˝ne
+the sequence of
+N
+-indexed line ensembles
+L
+N
+=
+f
+L
+N
+i
+g
+i
+
+1
+on
+R
+via
+(3.26)
+L
+N
+i
+(
+s
+) =
+8
+>
+<
+>
+:
+
+N
++
+s
+i
+if
+s
+2
+[
+
+N
++ 1
+; M
+N
+
+N
+]
+\
+Z
+;
+
+1
+i
+if
+s
+ 
+N ;
+
+M
+N
+i
+if
+s > M
+N
+
+N ;
+extended by linear interp olation for non-integer
+s
+. We ˝nally de˝ne
+L
+N
+=
+fL
+N
+i
+g
+i
+
+1
+via
+(3.27)
+L
+N
+i
+(
+s
+) =
+˙
+
+1
+N
+
+1
+=
+3
+
+
+L
+N
+i
+(
+sN
+2
+=
+3
+)
+
+psN
+2
+=
+3
+
+2
+pN
+
+:
+The following is a sp ecial case of [6, Prop ostion 6.2], corresp onding to setting
+c
++
+= 0
+.
+Prop osition 3.14.
+For any
+(
+a; b; c
+)
+2 P
+p os
+the sequence
+L
+N
+in (3.27) converges weakly to the line
+ensemble
+n
+f
+
+1
+=
+2
+q
+L
+a;b;c
+i
+(
+f
+q
+t
+) :
+i
+
+1
+; t
+2
+R
+o
+, where
+L
+a;b;c
+is as in Proposition [Something].
+4.
+Monotone couplings of Airy wanderer line ensemb les
+5.
+Asymptotic slopes
+References
+1.
+ A. Boro din,
+Schur dynamics of the Schur processes
+, Adv. Math.
+228
+(2011), no. 4, 22682291.
+2.
+ A. Boro din and Péché,
+Airy kernel with two sets of parameters in directed percolation and random matrix theory
+,
+J. Stat. Phys.
+132
+(2008), 275290.
+3.
+ A. Boro din and E.M. Rains,
+EynardMehta theorem, Schur process, and their Pfa˚an analogs
+, J. Stat. Phys.
+121
+(2005), 291317.
+4.
+ I. Corwin and A. Hammond,
+Brownian Gibbs property for Airy line ensembles
+, Invent. Math.
+195
+(2014), 441508.
+5.
+ E. Dimitrov,
+Airy wanderer line ensembles
+, arXiv:2408.08445 (2024).
+6.
+,
+Tightness for interlacing geometric random walk bridges
+, arXiv:2410.23899 (2024).
+
+
+MONOTONICITY AND ASYMPTOTIC SLOPES FOR AIRY WANDERER LINE ENSEMBLES 9
+7.
+ A. Okounkov and N. Reshetikhin,
+Correlation function of the Schur process with application to local geometry of
+random 3-dimensional Young diagram
+, J. Amer. M ath . So c.
+16
+(2003), 581603.
+8.
+ P. Pfei˙er,
+Probability for Applications
+, Springer, 1990.
+9.
+ E. Stein and R. Shakarchi,
+Complex analysis
+, Princeton University Press, Princeton, 2003.
