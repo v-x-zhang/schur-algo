@@ -85,16 +85,29 @@ class SchurLineTracker:
         self.y_entry = tk.Text(controls_frame, width=30, height=3, wrap=tk.WORD, font=("Consolas", 10))
         self.y_entry.grid(row=7, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
         self.y_entry.bind('<KeyRelease>', self.validate_inputs)
+        
+        # Path parameter
+        ttk.Label(controls_frame, text="Path (optional):", font=("Arial", 10, "bold")).grid(row=8, column=0, sticky=tk.W, pady=(5, 0))
+        ttk.Label(controls_frame, text="(D=Down, R=Right, starts at grid top-left)", 
+                 font=("Arial", 8), foreground="gray").grid(row=9, column=0, columnspan=2, sticky=tk.W)
+        self.path_entry = tk.Entry(controls_frame, width=30, font=("Consolas", 10))
+        self.path_entry.grid(row=10, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        self.path_entry.bind('<KeyRelease>', self.on_path_change)
+        
+        # Path validation label
+        self.path_validation_label = ttk.Label(controls_frame, text="", font=("Arial", 9))
+        self.path_validation_label.grid(row=11, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 5))
           # Validation label
+        # Validation label
         self.validation_label = ttk.Label(controls_frame, text="", font=("Arial", 9))
-        self.validation_label.grid(row=8, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        self.validation_label.grid(row=12, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
         
         # Generate button
         self.generate_btn = ttk.Button(controls_frame, text="🎲 Generate Sample", 
                                       command=self.generate_sample, state="disabled")
-        self.generate_btn.grid(row=9, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))        # Line tracking controls
+        self.generate_btn.grid(row=13, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))        # Line tracking controls
         tracking_frame = ttk.LabelFrame(controls_frame, text="Final Row Visualization", padding="5")
-        tracking_frame.grid(row=10, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        tracking_frame.grid(row=14, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
         
         ttk.Label(tracking_frame, text="View Mode:").grid(row=0, column=0, sticky=tk.W)
         self.view_mode_var = tk.StringVar(value="all_parts")
@@ -130,13 +143,13 @@ class SchurLineTracker:
 
         # Mathematical Presets
         presets_frame = ttk.LabelFrame(controls_frame, text="Mathematical Presets", padding="5")
-        presets_frame.grid(row=11, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        presets_frame.grid(row=15, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
         
         presets = [
             ("Geometric Series", "[0.1 * (0.8)**i for i in range(4)]", "[0.2 * (0.9)**i for i in range(3)]"),
             ("Arithmetic Series", "[0.1 + 0.05*i for i in range(4)]", "[0.15 + 0.1*i for i in range(3)]"),
             ("Powers of 2", "[0.1 * 2**(-i) for i in range(3)]", "[0.2 * 2**(-i) for i in range(2)]"),
-            ("Simple List", "0.2, 0.3, 0.4", "0.3, 0.4"),
+            ("Simple List", "[0.9 for i in range(6)]", "[0.9 for i in range(6)]"),
             ("Linear Growth", "[0.1 * i for i in range(1, 5)]", "[0.2 + 0.1*i for i in range(2)]"),
             ("Exponential Decay", "[0.1 * math.exp(-i * 0.5) for i in range(5)]", "[0.1 * math.exp(-i * 0.5) for i in range(5)]"),
         ]
@@ -151,7 +164,7 @@ class SchurLineTracker:
 
         # Info display
         info_frame = ttk.LabelFrame(controls_frame, text="Current Sample Info", padding="5")
-        info_frame.grid(row=12, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S))
+        info_frame.grid(row=16, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         self.info_text = tk.Text(info_frame, width=30, height=8, wrap=tk.WORD, 
                                 font=("Consolas", 9))
@@ -163,7 +176,7 @@ class SchurLineTracker:
         
         info_frame.columnconfigure(0, weight=1)
         info_frame.rowconfigure(0, weight=1)
-        controls_frame.rowconfigure(12, weight=1)
+        controls_frame.rowconfigure(16, weight=1)
     
     def create_visualization(self, parent):
         """Create the visualization panels with tabs."""
@@ -201,6 +214,12 @@ class SchurLineTracker:
         self.grid_tab.columnconfigure(0, weight=1)
         self.grid_tab.rowconfigure(0, weight=1)
         
+        # Third tab: Path Visualization
+        self.path_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.path_tab, text="Path View")
+        self.path_tab.columnconfigure(0, weight=1)
+        self.path_tab.rowconfigure(0, weight=1)
+        
         # Grid visualization frame
         grid_frame = ttk.LabelFrame(self.grid_tab, text="Complete Schur Process Grid", padding="5")
         grid_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
@@ -223,6 +242,29 @@ class SchurLineTracker:
         grid_frame.rowconfigure(0, weight=1)
         grid_frame.rowconfigure(1, weight=0)
         
+        # Path visualization frame
+        path_frame = ttk.LabelFrame(self.path_tab, text="Path Partitions", padding="5")
+        path_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
+        path_frame.columnconfigure(0, weight=1)
+        path_frame.rowconfigure(0, weight=1)
+        
+        self.path_fig = Figure(figsize=(10, 6), dpi=100)
+        self.path_ax = self.path_fig.add_subplot(111)
+        self.path_canvas = FigureCanvasTkAgg(self.path_fig, path_frame)
+        self.path_canvas.get_tk_widget().grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        # Path info display
+        self.path_info = tk.Text(path_frame, width=80, height=6, wrap=tk.WORD, 
+                                font=("Consolas", 9))
+        path_scroll = ttk.Scrollbar(path_frame, orient=tk.VERTICAL, command=self.path_info.yview)
+        self.path_info.configure(yscrollcommand=path_scroll.set)
+        
+        self.path_info.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(5, 0))
+        path_scroll.grid(row=1, column=1, sticky=(tk.N, tk.S), pady=(5, 0))
+        
+        path_frame.rowconfigure(0, weight=1)
+        path_frame.rowconfigure(1, weight=0)
+        
         # Initialize empty plots
         self.init_plots()
         
@@ -243,6 +285,14 @@ class SchurLineTracker:
                          ha='center', va='center', transform=self.grid_ax.transAxes,
                          fontsize=12, alpha=0.7)
         self.grid_canvas.draw()
+        
+        self.path_ax.set_title("Path Partitions (No data)")
+        self.path_ax.set_xlabel("Step along Path")
+        self.path_ax.set_ylabel("Part Value")
+        self.path_ax.text(0.5, 0.5, "Enter a path (e.g., 'DDRRDR') to see\npartitions along the path", 
+                         ha='center', va='center', transform=self.path_ax.transAxes,
+                         fontsize=12, alpha=0.7)
+        self.path_canvas.draw()
     def load_defaults(self):
         """Load default parameter values."""
         self.x_entry.insert("1.0", "[0.1 * 2**i for i in range(3)]")
@@ -346,6 +396,60 @@ class SchurLineTracker:
             self.generate_btn.config(state="disabled")
             return False
     
+    def validate_path(self, event=None):
+        """Validate the path parameter."""
+        path_text = self.path_entry.get().strip().upper()
+        
+        if not path_text:
+            self.path_validation_label.config(text="", foreground="gray")
+            return True
+        
+        # Check if path contains only D and R characters
+        if not all(c in 'DR' for c in path_text):
+            self.path_validation_label.config(text="❌ Path must contain only 'D' (Down) and 'R' (Right)", 
+                                            foreground="red")
+            return False
+        
+        # Validate path against current grid if available
+        if self.current_grid is not None:
+            rows = len(self.current_grid)
+            cols = len(self.current_grid[0])
+            
+            # Start at top-left corner of entire grid
+            display_row = rows - 1  # Start at the top (final row)
+            display_col = 0         # Start at leftmost column
+            
+            # Check if path stays within entire grid bounds
+            for step in path_text:
+                if step == 'D':
+                    display_row -= 1  # Moving down means decreasing row
+                elif step == 'R':
+                    display_col += 1  # Moving right
+                
+                # Check bounds (entire grid is [0, rows-1] x [0, cols-1])
+                if display_row < 0 or display_col >= cols:
+                    self.path_validation_label.config(
+                        text=f"❌ Path goes outside grid bounds ({rows}×{cols})", 
+                        foreground="red")
+                    return False
+            
+            self.path_validation_label.config(
+                text=f"✓ Valid path: {len(path_text)} steps in {rows}×{cols} grid", 
+                foreground="green")
+        else:
+            self.path_validation_label.config(
+                text=f"✓ Valid path format: {len(path_text)} steps", 
+                foreground="green")
+        
+        return True
+    
+    def on_path_change(self, event=None):
+        """Handle path parameter change."""
+        self.validate_path()
+        if self.current_grid is not None:
+            self.update_path_plot()
+            self.update_grid_plot()  # Redraw grid with new path
+    
     def generate_sample(self):
         """Generate a new Schur process sample."""
         try:
@@ -366,10 +470,14 @@ class SchurLineTracker:
               # Update visualizations
             self.update_line_plot()
             self.update_grid_plot()
+            self.update_path_plot()
             self.update_info()
             
             # Update part selector with actual max parts
             self.update_part_selector()
+            
+            # Re-validate path with new grid
+            self.validate_path()
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate sample:\n{str(e)}")
@@ -403,6 +511,65 @@ class SchurLineTracker:
             # Regenerate with new sampling method
             self.generate_sample()
     
+    def get_path_partitions(self, path_text):
+        """Extract partitions along the specified path."""
+        if not path_text or self.current_grid is None:
+            return []
+        
+        path_partitions = []
+        rows = len(self.current_grid)
+        cols = len(self.current_grid[0])
+        
+        # Start at top-left corner of entire grid
+        grid_row = rows - 1     # Start at final row
+        grid_col = 0            # Start at leftmost column
+        display_row = rows - 1  # Display row (same as grid row)
+        display_col = 0         # Display column (same as grid col)
+        
+        # Add starting partition
+        path_partitions.append((display_row, display_col, self.current_grid[grid_row][grid_col]))
+        
+        # Follow the path
+        for step in path_text:
+            if step == 'D':
+                grid_row -= 1       # Moving down in grid (toward row 0)
+                display_row -= 1    # Moving down in display (decreasing y)
+            elif step == 'R':
+                grid_col += 1       # Moving right in both
+                display_col += 1    # Moving right in both
+            
+            # Check bounds
+            if 0 <= grid_row < rows and 0 <= grid_col < cols:
+                path_partitions.append((display_row, display_col, self.current_grid[grid_row][grid_col]))
+            else:
+                break
+        
+        return path_partitions
+    
+    def get_path_coordinates(self, path_text):
+        """Get the coordinates along the specified path for display."""
+        if not path_text:
+            return []
+        
+        coordinates = []
+        rows = len(self.current_grid)
+        cols = len(self.current_grid[0])
+        
+        # Start at top-left corner of entire grid
+        display_row = rows - 1  # Start at the top (final row)
+        display_col = 0         # Start at leftmost column
+        coordinates.append((display_row, display_col))
+        
+        # Follow the path in display coordinates
+        for step in path_text:
+            if step == 'D':
+                display_row -= 1  # Moving down means decreasing row in display
+            elif step == 'R':
+                display_col += 1  # Moving right
+            coordinates.append((display_row, display_col))
+        
+        return coordinates
+    
     def on_grid_click(self, event):
         """Handle click events on the grid visualization."""
         if self.current_grid is None or event.inaxes != self.grid_ax:
@@ -426,12 +593,14 @@ class SchurLineTracker:
             if partition._parts:
                 partition_text = str(partition._parts)
                 size = sum(partition._parts)
+                largest_part = max(partition._parts)
+                display_text = f"Position ({row}, {col}): λ = {partition_text} (weight = {size}, max part = {largest_part})"
             else:
                 partition_text = "[]"
                 size = 0
+                display_text = f"Position ({row}, {col}): λ = {partition_text} (weight = {size})"
             
             # Update display label
-            display_text = f"Position ({row}, {col}): λ = {partition_text} (weight = {size})"
             self.partition_display.config(text=display_text)
         else:
             self.partition_display.config(text="Click on any grid cell to view its partition")
@@ -446,29 +615,60 @@ class SchurLineTracker:
         rows = len(self.current_grid)
         cols = len(self.current_grid[0])
         
+        # First pass: find the global maximum part value for normalization
+        max_part_value = 0
+        for n in range(rows):
+            for m in range(cols):
+                partition = self.current_grid[n][m]
+                if partition._parts:
+                    max_part_value = max(max_part_value, max(partition._parts))
+        
         # Create color-coded grid
         for n in range(rows):
             for m in range(cols):
                 partition = self.current_grid[n][m]
-                size = sum(partition._parts) if partition._parts else 0
-                
-                # Color based on partition size
-                if size == 0:
+                # Color based on the largest part in the partition
+                if not partition._parts:
                     color = 'lightgray'
                     text_color = 'black'
                 else:
-                    intensity = min(size / 5.0, 1.0)  # Normalize to 0-1
+                    largest_part = max(partition._parts)
+                    if max_part_value > 0:
+                        intensity = largest_part / max_part_value  # Normalize to 0-1
+                    else:
+                        intensity = 0
                     color = plt.cm.Blues(0.3 + 0.7 * intensity)
                     text_color = 'white' if intensity > 0.5 else 'black'
-                  # Draw cell (no flipping - display in natural order)
+                
+                # Draw cell (no flipping - display in natural order)
                 rect = plt.Rectangle((m, n), 1, 1, facecolor=color, 
                                    edgecolor='black', linewidth=1)
                 self.grid_ax.add_patch(rect)
                 
                 # No text overlay - will be shown on click instead
-                                   # Highlight the final row (which is now at the top)
-        self.grid_ax.axhline(y=rows-1, color='red', linewidth=4, alpha=0.8, 
-                           label='Final Row (Schur Process)')
+                
+        # Draw path if specified
+        path_text = self.path_entry.get().strip().upper()
+        if path_text and self.validate_path():
+            coordinates = self.get_path_coordinates(path_text)
+            if len(coordinates) > 1:
+                # Extract x and y coordinates for the path (display coordinates)
+                path_x = [coord[1] + 0.5 for coord in coordinates]  # Column + 0.5 for center
+                path_y = [coord[0] + 0.5 for coord in coordinates]  # Row + 0.5 for center
+                
+                # Draw the path as a red line
+                self.grid_ax.plot(path_x, path_y, 'r-', linewidth=3, alpha=0.8, 
+                                label=f'Path: {path_text}')
+                
+                # Mark start and end points
+                self.grid_ax.plot(path_x[0], path_y[0], 'go', markersize=10, 
+                                label='Start (Grid Top-Left)', markeredgecolor='black', markeredgewidth=2)
+                self.grid_ax.plot(path_x[-1], path_y[-1], 'rs', markersize=10, 
+                                label='End', markeredgecolor='black', markeredgewidth=2)
+        
+        # Highlight the final row (which is now at the top)
+        # self.grid_ax.axhline(y=rows-1, color='red', linewidth=4, alpha=0.8, 
+        #                    label='Final Row (Schur Process)')
         self.grid_ax.legend(loc='upper right')
         self.grid_ax.set_xlim(0, cols)
         self.grid_ax.set_ylim(0, rows)
@@ -485,6 +685,110 @@ class SchurLineTracker:
             self.partition_display.config(text="Click on any grid cell to view its partition")
         
         self.grid_canvas.draw()
+    
+    def update_path_plot(self):
+        """Update the path visualization."""
+        self.path_ax.clear()
+        self.path_info.delete(1.0, tk.END)
+        
+        path_text = self.path_entry.get().strip().upper()
+        
+        if not path_text or self.current_grid is None:
+            self.path_ax.set_title("Path Partitions (No path specified)")
+            self.path_ax.text(0.5, 0.5, "Enter a path (e.g., 'DDRRDR') to see\npartitions along the path", 
+                             ha='center', va='center', transform=self.path_ax.transAxes,
+                             fontsize=12, alpha=0.7)
+            self.path_canvas.draw()
+            return
+        
+        if not self.validate_path():
+            self.path_ax.set_title("Path Partitions (Invalid path)")
+            self.path_ax.text(0.5, 0.5, "Invalid path specification", 
+                             ha='center', va='center', transform=self.path_ax.transAxes,
+                             fontsize=12, alpha=0.7)
+            self.path_canvas.draw()
+            return
+        
+        # Get partitions along the path
+        path_partitions = self.get_path_partitions(path_text)
+        
+        if not path_partitions:
+            return
+        
+        # Get grid dimensions for info text
+        rows = len(self.current_grid)
+        cols = len(self.current_grid[0])
+        
+        # Prepare data for plotting
+        step_indices = list(range(len(path_partitions)))
+        
+        # Find maximum number of parts
+        max_parts = 0
+        for _, _, partition in path_partitions:
+            max_parts = max(max_parts, len(partition._parts))
+        
+        if max_parts == 0:
+            self.path_ax.set_title("Path Partitions (All empty)")
+            self.path_ax.text(0.5, 0.5, "All partitions along path are empty", 
+                             ha='center', va='center', transform=self.path_ax.transAxes,
+                             fontsize=12, alpha=0.7)
+            self.path_canvas.draw()
+            return
+        
+        # Plot each part
+        import matplotlib.cm as cm
+        import matplotlib.pyplot as plt
+        colormap = plt.cm.get_cmap('coolwarm')
+        colors = [colormap(i / max(1, max_parts - 1)) for i in range(max_parts)]
+        
+        for part_num in range(1, max_parts + 1):
+            values = []
+            for _, _, partition in path_partitions:
+                values.append(partition.part(part_num))
+            
+            if any(v > 0 for v in values):
+                color = colors[part_num-1]
+                self.path_ax.plot(step_indices, values, 'o-', linewidth=2, 
+                                 markersize=6, label=f'Part {part_num}', 
+                                 color=color, markeredgecolor='black', markeredgewidth=1)
+        
+        self.path_ax.set_xlabel("Step along Path")
+        self.path_ax.set_ylabel("Part Value")
+        self.path_ax.set_title(f"Partitions along Path: {path_text}")
+        self.path_ax.grid(True, alpha=0.3)
+        self.path_ax.legend()
+        
+        # Set integer ticks
+        self.path_ax.set_xticks(step_indices)
+        
+        # Add path step labels
+        step_labels = ['Start']
+        for i, step in enumerate(path_text):
+            step_labels.append(f'{step}{i+1}')
+        
+        self.path_ax.set_xticklabels(step_labels, rotation=45, ha='right')
+        
+        self.path_canvas.draw()
+        
+        # Update path info
+        info_text = f"PATH ANALYSIS\\n"
+        info_text += f"{'='*50}\\n"
+        info_text += f"Path: {path_text} ({len(path_text)} steps)\\n"
+        info_text += f"Grid size: {rows}×{cols} (entire grid accessible)\\n"
+        info_text += f"Partitions along path:\\n\\n"
+        
+        for i, (display_row, display_col, partition) in enumerate(path_partitions):
+            step_name = 'Start' if i == 0 else f'{path_text[i-1]}{i}'
+            partition_str = str(list(partition._parts)) if partition._parts else '[]'
+            weight = sum(partition._parts) if partition._parts else 0
+            
+            # Display and grid coordinates are now the same
+            grid_row = display_row
+            grid_col = display_col
+            
+            info_text += f"Step {i} ({step_name}): Display({display_row},{display_col}) Grid({grid_row},{grid_col}) = {partition_str} (weight={weight})\\n"
+        
+        self.path_info.insert(1.0, info_text)
     
     def update_line_plot(self, event=None):
         """Update the final row visualization."""
@@ -519,7 +823,7 @@ class SchurLineTracker:
                 return
             
             # Create color gradient from blue to red
-            colormap = cm.get_cmap('coolwarm')  # Blue to red gradient
+            colormap = plt.cm.get_cmap('coolwarm')  # Blue to red gradient
             colors = [colormap(i / max(1, max_part - 1)) for i in range(max_part)]
             for part_num in range(1, max_part + 1):  # Show ALL parts, not just up to 6
                 values = []
