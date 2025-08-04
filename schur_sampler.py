@@ -168,11 +168,10 @@ def sample_rsk_grid(X, Y):
     for n in range(N):  # n in 0..N-1
         for m in range(1, M + 1):  # m in 1..M
             # Get neighboring partitions μ and ν
-            mu = λ[n][m]      # partition above
-            nu = λ[n+1][m-1]  # partition to the left
+            mu = λ[n][m]      # above
+            nu = λ[n+1][m-1]  # left
             
             # Sample ρ partition (interlacing with both μ and ν)
-            # For simplicity, start with sampling each part independently
             rho_parts = []
             q = X[m-1] * Y[n]  # probability parameter
             
@@ -196,7 +195,6 @@ def sample_rsk_grid(X, Y):
             rho = PartitionWrapper(rho_parts)
             
             # Sample m (carry value)
-            # For simplicity, sample from geometric distribution
             m_val = sample_truncated_geometric_pmf(0, 10, q)  # bounded to prevent explosion
             m_val = int(m_val)  # Ensure it's a regular Python int
             
@@ -205,6 +203,8 @@ def sample_rsk_grid(X, Y):
     
     # Step 4: Return λ as List[List[Partition]] of shape (N+1)×(M+1)
     return λ
+
+
 
 
 def sample_truncated_geometric_pmf(a, b, q):
@@ -336,8 +336,138 @@ def test_rsk_process():
     return λ_rsk
 
 
+# ===== BORODIN ALGORITHM IMPLEMENTATION =====
+
+import random
+import math
+
+class BorodinPartition:
+    """Simple partition wrapper supporting 1-indexed access for Borodin's algorithm."""
+    def __init__(self, parts):
+        # parts should be a non-increasing list of non-neg ints
+        self.parts = parts.copy()
+
+    def part(self, i):
+        """Return the i-th part (1-indexed), or 0 if i > length."""
+        return self.parts[i-1] if 1 <= i <= len(self.parts) else 0
+
+    def length(self):
+        return len(self.parts)
+
+    def __repr__(self):
+        return f"BorodinPartition({self.parts})"
+
+
+def sample_truncated_geometric_borodin(a, b, q):
+    """
+    Draw k ~ Geom(q) truncated to [a,b], i.e.
+      P(k) ∝ q^k   for k=a,…,b.
+    We ignore the (1-q) factor since it cancels in normalization.
+    """
+    # build unnormalized pmf
+    pmf = [q**k for k in range(a, b+1)]
+    total = sum(pmf)
+    if total == 0:
+        return a
+    r = random.random() * total
+    cum = 0.0
+    for idx, p in enumerate(pmf, start=a):
+        cum += p
+        if r < cum:
+            return idx
+    return b
+
+
+def sample_push_block_grid_borodin(X, Y):
+    """
+    Borodin's push–block sampler.
+
+    X: list of M floats (x1…xM)
+    Y: list of N floats (y1…yN), with x_i * y_j < 1
+    returns: (N+1)x(M+1) grid of BorodinPartition objects
+    """
+    M, N = len(X), len(Y)
+
+    # Validate input parameters
+    for i, x in enumerate(X):
+        for j, y in enumerate(Y):
+            if x * y >= 1:
+                raise ValueError(f"Constraint violated: X[{i}] * Y[{j}] = {x * y} >= 1")
+
+    # initialize empty grid of partitions
+    Λ = [[BorodinPartition([]) for _ in range(M+1)] for _ in range(N+1)]
+
+    # main down–right traversal
+    for n in range(N):           # rows 0..N-1
+        for m in range(1, M+1):  # cols 1..M
+            mu = Λ[n][m]         # above
+            nu = Λ[n+1][m-1]     # left
+            q  = X[m-1] * Y[n]   # geometric parameter
+
+            # determine how many parts we need to sample
+            K = max(mu.length(), nu.length()) + 1
+
+            new_parts = []
+            for i in range(1, K+1):
+                a_i = max(mu.part(i), nu.part(i))
+                if i == 1:
+                    b_i = math.inf
+                else:
+                    b_i = min(mu.part(i-1), nu.part(i-1))
+
+                # sample the i-th part from Geom(q) truncated to [a_i, b_i]
+                if b_i == math.inf:
+                    # Handle infinite upper bound case
+                    if q >= 1:
+                        ℓ = a_i
+                    else:
+                        # Use geometric distribution starting at a_i
+                        ℓ = a_i + np.random.geometric(1 - q) - 1
+                else:
+                    ℓ = sample_truncated_geometric_borodin(a_i, int(b_i), q)
+                
+                if ℓ > 0:
+                    new_parts.append(ℓ)
+
+            Λ[n+1][m] = BorodinPartition(new_parts)
+
+    return Λ
+
+
+def test_borodin_process():
+    """Test the Borodin process sampling with small parameters."""
+    
+    print("Testing Borodin process sampling algorithm...")
+    
+    # Test with a very small example
+    print("\n=== Borodin Small Test Case ===")
+    X_small = [0.3, 0.4, 0.2]
+    Y_small = [0.5, 0.1]
+    
+    print(f"X = {X_small}, Y = {Y_small}")
+    print(f"Grid size will be: {len(Y_small)+1} × {len(X_small)+1}")
+    
+    # Set seed for reproducibility
+    random.seed(42)
+    np.random.seed(42)
+    
+    λ_borodin = sample_push_block_grid_borodin(X_small, Y_small)
+    
+    print("Borodin sampled partition grid:")
+    for n in range(len(λ_borodin)):
+        row_str = []
+        for m in range(len(λ_borodin[0])):
+            partition_str = str(λ_borodin[n][m].parts)
+            row_str.append(partition_str)
+        print(f"Row {n}: {row_str}")
+    
+    return λ_borodin
+
+
 if __name__ == "__main__":
     test_schur_process()
     print("\n" + "="*50)
     test_rsk_process()
+    print("\n" + "="*50)
+    test_borodin_process()
 
