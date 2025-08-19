@@ -3,10 +3,7 @@ from sympy.combinatorics.partitions import Partition
 import numpy as np
 
 class PartitionWrapper:
-    """Wrapper for sympy Partition to provide part(i) and set    for n in range(N):
-        λ[n][0] = PartitionWrapper([])  # Empty partition for left column
-    
-    # Step 3: Fill the grid using RSK Algorithm F1i, value) methods."""
+    """Wrapper for sympy Partition to provide part(i) and set_part(i, value) methods."""
     
     def __init__(self, parts=None):
         if parts is None:
@@ -167,9 +164,7 @@ def sample_rsk_grid(X, Y):
         λ[0][m] = PartitionWrapper([])  # Empty partition for top row
     for n in range(N + 1):
         λ[n][0] = PartitionWrapper([])  # Empty partition for left column
-        
-    #RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-
+    
     # Step 3: Fill the grid using RSK Algorithm F1
     for n in range(N):  # n in 0..N-1
         for m in range(1, M + 1):  # m in 1..M
@@ -177,11 +172,11 @@ def sample_rsk_grid(X, Y):
             mu = λ[n][m]      # above
             nu = λ[n+1][m-1]  # left
             rho = λ[n][m-1] if m > 1 else PartitionWrapper([])  # left above
-
+            
             q = X[m-1] * Y[n]  # probability parameter
             
             # Sample m (carry value)
-            m_val = sample_truncated_geometric_pmf(0, 100, q) # bounded to prevent explosion
+            m_val = sample_truncated_geometric_pmf(0, 10, q)  # bounded to prevent explosion
             m_val = int(m_val)  # Ensure it's a regular Python int
             
             # Apply Algorithm F1
@@ -190,58 +185,7 @@ def sample_rsk_grid(X, Y):
     # Step 4: Return λ as List[List[Partition]] of shape (N+1)×(M+1)
     return λ
 
-def sample_rsk_grid_symmetric(c, q, X, Y):
-    """
-    Sample RSK grid using Algorithm F1.
-    X: list of M floats (x1…xM), Y: list of N floats (y1…yN) with xi*yj < 1
-    returns: (N+1)x(M+1) grid λ of sympy Partition objects
-    """
-    M = len(X)
-    N = len(Y)
-    
-    # Validate input parameters
-    for i, x in enumerate(X):
-        for j, y in enumerate(Y):
-            if x * y >= 1:
-                raise ValueError(f"Constraint violated: X[{i}] * Y[{j}] = {x * y} >= 1")
 
-    # Step 1: Create (N+1)×(M+1) array λ of Partition objects
-    λ = [[None for _ in range(M + 1)] for _ in range(N + 1)]
-    
-    # Step 2: Initialization - set λ[0][m] = λ[n][0] = empty partition
-    for m in range(M + 1):
-        λ[0][m] = PartitionWrapper([])  # Empty partition for top row
-    for n in range(N + 1):
-        λ[n][0] = PartitionWrapper([])  # Empty partition for left column
-    
-    weights = [[0 for _ in range(M)] for _ in range(N)]
-
-    
-    for i in range(M):
-        for j in range(N):
-            if i == j:
-                weights[i][j] = sample_truncated_geometric_pmf(0, 100, c*q) 
-            else:
-                weights[i][j] = sample_truncated_geometric_pmf(0, 100, q*q) 
-                weights[j][i] = weights[i][j]
-
-    # Step 3: Fill the grid using RSK Algorithm F1
-    for n in range(N):  # n in 0..N-1
-        for m in range(1, M + 1):  # m in 1..M
-            # Get neighboring partitions μ and ν
-            mu = λ[n][m]      # above
-            nu = λ[n+1][m-1]  # left
-            rho = λ[n][m-1] if m > 1 else PartitionWrapper([])  # left above
-            
-            # Sample m (carry value)
-            m_val = weights[m-1][n]  # bounded to prevent explosion
-            m_val = int(m_val)  # Ensure it's a regular Python int
-            
-            # Apply Algorithm F1
-            λ[n+1][m] = rsk_algorithm_f1(mu, nu, rho, m_val)
-    
-    # Step 4: Return λ as List[List[Partition]] of shape (N+1)×(M+1)
-    return λ
 
 
 def sample_truncated_geometric_pmf(a, b, q):

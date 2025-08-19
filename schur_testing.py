@@ -4,6 +4,7 @@ import numpy as np
 from collections import Counter, defaultdict
 import argparse
 import sys
+from tqdm import tqdm
 
 def sample_both_grids(X, Y, path, debug=False):
     """
@@ -81,16 +82,15 @@ def sample_both_grids(X, Y, path, debug=False):
 
     return push_block_path_partitions, rsk_path_partitions
 
-def compare_full_grid_distributions(X, Y, sim_count=1000, debug=False, ignore_edges=True):
+def compare_grid_distributions(X, Y, sim_count=1000, debug=False):
     """
-    Compare the full grid distributions of push-block and RSK algorithms using complete partitions.
+    Compare the complete grid distributions of push-block and RSK algorithms.
     
     Parameters:
     - X: List of probabilities for each row in the grid
     - Y: List of probabilities for each column in the grid
     - sim_count: Number of simulations to run
     - debug: Boolean flag to enable debug mode
-    - ignore_edges: Boolean flag to ignore edge partitions (first/last rows/columns)
     
     Returns:
     - Dictionary with comparison statistics
@@ -98,229 +98,234 @@ def compare_full_grid_distributions(X, Y, sim_count=1000, debug=False, ignore_ed
     rows = len(Y) + 1
     cols = len(X) + 1
     
-    # Store the complete partitions for each grid position
-    push_block_partitions = [[[] for _ in range(cols)] for _ in range(rows)]
-    rsk_partitions = [[[] for _ in range(cols)] for _ in range(rows)]
+    # Store the complete grids as hashable tuples
+    push_block_grids = []
+    rsk_grids = []
     
-    print(f"Running {sim_count} simulations on {rows}x{cols} grid (complete partitions)...")
-    if ignore_edges:
-        print("Ignoring edge partitions in analysis.")
+    print(f"Running {sim_count} simulations on {rows}x{cols} grid (complete grid distributions)...")
     
-    for sim in range(sim_count):
-        if sim % (sim_count // 10) == 0 and sim > 0:
-            print(f"Progress: {sim}/{sim_count} ({100*sim//sim_count}%)")
-        
+    # Use tqdm for progress monitoring with time estimates
+    for sim in tqdm(range(sim_count), desc="Grid Simulation", unit="sim"):
         # Sample both grids
         push_block_grid = sample_push_block_grid(X, Y)
         rsk_grid = sample_rsk_grid(X, Y)
         
-        # Extract complete partitions for each position
-        for i in range(rows):
-            for j in range(cols):
-                push_partition = tuple(push_block_grid[i][j]._parts)
-                rsk_partition = tuple(rsk_grid[i][j]._parts)
-                push_block_partitions[i][j].append(push_partition)
-                rsk_partitions[i][j].append(rsk_partition)
+        # Convert grids to hashable format (tuple of tuples of partition tuples)
+        push_grid_tuple = tuple(
+            tuple(tuple(partition._parts) for partition in row) 
+            for row in push_block_grid
+        )
+        rsk_grid_tuple = tuple(
+            tuple(tuple(partition._parts) for partition in row) 
+            for row in rsk_grid
+        )
+        
+        push_block_grids.append(push_grid_tuple)
+        rsk_grids.append(rsk_grid_tuple)
     
-    # Compute statistics for each position
-    stats = {}
-    total_kl_divergence = 0
-    total_jaccard_similarity = 0
-    max_kl_divergence = 0
-    min_jaccard_similarity = 1
-    max_kl_pos = None
-    min_jaccard_pos = None
-    analyzed_positions = 0
+    # Count unique grid configurations
+    push_counts = Counter(push_block_grids)
+    rsk_counts = Counter(rsk_grids)
     
-    for i in range(rows):
-        for j in range(cols):
-            # Skip edge positions if ignore_edges is True
-            if ignore_edges and (i == 0 or i == rows-1 or j == 0 or j == cols-1):
-                continue
-                
-            push_counts = Counter(push_block_partitions[i][j])
-            rsk_counts = Counter(rsk_partitions[i][j])
+    push_unique = set(push_block_grids)
+    rsk_unique = set(rsk_grids)
+    common_grids = push_unique & rsk_unique
+    all_grids = push_unique | rsk_unique
+    
+    # Calculate metrics
+    jaccard_similarity = len(common_grids) / len(all_grids) if all_grids else 1
+    
+    # Calculate KL divergence between grid distributions
+    def calculate_kl_divergence(p_dist, q_dist, all_items):
+        kl = 0
+        total_p = sum(p_dist.values())
+        total_q = sum(q_dist.values())
+        
+        for item in all_items:
+            p_prob = p_dist.get(item, 0) / total_p if total_p > 0 else 0
+            q_prob = q_dist.get(item, 0) / total_q if total_q > 0 else 0
             
-            push_unique = set(push_block_partitions[i][j])
-            rsk_unique = set(rsk_partitions[i][j])
-            common_partitions = push_unique & rsk_unique
-            all_partitions = push_unique | rsk_unique
-            
-            # Calculate metrics
-            jaccard_similarity = len(common_partitions) / len(all_partitions) if all_partitions else 1
-            
-            # Calculate KL divergence
-            def calculate_kl_divergence(p_dist, q_dist, all_items):
-                kl = 0
-                total_p = sum(p_dist.values())
-                total_q = sum(q_dist.values())
-                
-                for item in all_items:
-                    p_prob = p_dist.get(item, 0) / total_p if total_p > 0 else 0
-                    q_prob = q_dist.get(item, 0) / total_q if total_q > 0 else 0
-                    
-                    if p_prob > 0 and q_prob > 0:
-                        kl += p_prob * np.log2(p_prob / q_prob)
-                    elif p_prob > 0 and q_prob == 0:
-                        return float('inf')
-                return kl
-            
-            kl_divergence = calculate_kl_divergence(push_counts, rsk_counts, all_partitions)
-            
-            # Update totals (ignore infinite KL divergences for averages)
-            if kl_divergence != float('inf'):
-                total_kl_divergence += kl_divergence
-                if kl_divergence > max_kl_divergence:
-                    max_kl_divergence = kl_divergence
-                    max_kl_pos = (i, j)
-            
-            total_jaccard_similarity += jaccard_similarity
-            if jaccard_similarity < min_jaccard_similarity:
-                min_jaccard_similarity = jaccard_similarity
-                min_jaccard_pos = (i, j)
-            
-            analyzed_positions += 1
-            
-            stats[(i, j)] = {
-                'push_block_unique': len(push_unique),
-                'rsk_unique': len(rsk_unique),
-                'common_partitions': len(common_partitions),
-                'jaccard_similarity': jaccard_similarity,
-                'kl_divergence': kl_divergence,
-                'push_block_counts': push_counts,
-                'rsk_counts': rsk_counts,
-                'push_block_data': push_block_partitions[i][j],
-                'rsk_data': rsk_partitions[i][j]
-            }
+            if p_prob > 0 and q_prob > 0:
+                kl += p_prob * np.log2(p_prob / q_prob)
+            elif p_prob > 0 and q_prob == 0:
+                return float('inf')
+        return kl
+    
+    kl_divergence = calculate_kl_divergence(push_counts, rsk_counts, all_grids)
+    
+    # Calculate entropy for each distribution
+    def calculate_entropy(counts, total):
+        if total == 0:
+            return 0
+        entropy = 0
+        for count in counts.values():
+            p = count / total
+            if p > 0:
+                entropy -= p * np.log2(p)
+        return entropy
+    
+    push_entropy = calculate_entropy(push_counts, len(push_block_grids))
+    rsk_entropy = calculate_entropy(rsk_counts, len(rsk_grids))
     
     summary = {
-        'total_kl_divergence': total_kl_divergence,
-        'total_jaccard_similarity': total_jaccard_similarity,
-        'avg_kl_divergence': total_kl_divergence / analyzed_positions if analyzed_positions > 0 else 0,
-        'avg_jaccard_similarity': total_jaccard_similarity / analyzed_positions if analyzed_positions > 0 else 0,
-        'max_kl_divergence': max_kl_divergence,
-        'min_jaccard_similarity': min_jaccard_similarity,
-        'max_kl_pos': max_kl_pos,
-        'min_jaccard_pos': min_jaccard_pos,
+        'push_block_unique': len(push_unique),
+        'rsk_unique': len(rsk_unique),
+        'common_grids': len(common_grids),
+        'total_grids': len(all_grids),
+        'jaccard_similarity': jaccard_similarity,
+        'kl_divergence': kl_divergence,
+        'push_entropy': push_entropy,
+        'rsk_entropy': rsk_entropy,
         'grid_size': (rows, cols),
-        'analyzed_positions': analyzed_positions,
-        'ignore_edges': ignore_edges,
-        'stats': stats
+        'simulations': sim_count,
+        'push_counts': push_counts,
+        'rsk_counts': rsk_counts,
+        'push_grids': push_block_grids,
+        'rsk_grids': rsk_grids
     }
     
     return summary
 
 def plot_grid_comparison(stats_summary, X, Y, save_path=None):
     """
-    Plot heatmaps comparing the two algorithms across the full grid using partition metrics.
+    Plot comparison of complete grid distributions between the two algorithms.
     
     Parameters:
-    - stats_summary: Dictionary returned by compare_full_grid_distributions
+    - stats_summary: Dictionary returned by compare_grid_distributions
     - X, Y: Grid parameters
     - save_path: Optional path to save the plot
     """
-    rows, cols = stats_summary['grid_size']
-    stats = stats_summary['stats']
-    ignore_edges = stats_summary.get('ignore_edges', False)
+    push_counts = stats_summary['push_counts']
+    rsk_counts = stats_summary['rsk_counts']
     
-    # Create matrices for the heatmaps
-    push_block_unique = np.full((rows, cols), np.nan)
-    rsk_unique = np.full((rows, cols), np.nan)
-    jaccard_similarities = np.full((rows, cols), np.nan)
-    kl_divergences = np.full((rows, cols), np.nan)
-    
-    for (i, j), data in stats.items():
-        push_block_unique[i, j] = data['push_block_unique']
-        rsk_unique[i, j] = data['rsk_unique']
-        jaccard_similarities[i, j] = data['jaccard_similarity']
-        kl_div = data['kl_divergence']
-        kl_divergences[i, j] = kl_div if kl_div != float('inf') else np.nan
+    # Get the most common grids for visualization
+    max_grids_to_show = 10
+    top_push_grids = push_counts.most_common(max_grids_to_show)
+    top_rsk_grids = rsk_counts.most_common(max_grids_to_show)
     
     # Create the plot
-    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
     
-    # Push-block unique partitions heatmap
-    im1 = axes[0, 0].imshow(push_block_unique, cmap='viridis', aspect='auto')
-    axes[0, 0].set_title('Push-Block Algorithm: Unique Partitions Count')
-    axes[0, 0].set_xlabel('Column Index (m)')
-    axes[0, 0].set_ylabel('Row Index (n)')
-    plt.colorbar(im1, ax=axes[0, 0])
+    # Plot 1: Distribution of unique grid counts
+    unique_counts = [stats_summary['push_block_unique'], stats_summary['rsk_unique'], 
+                    stats_summary['common_grids']]
+    labels = ['Push-Block\nUnique', 'RSK\nUnique', 'Common\nGrids']
+    colors = ['blue', 'red', 'green']
     
-    # RSK unique partitions heatmap
-    im2 = axes[0, 1].imshow(rsk_unique, cmap='viridis', aspect='auto')
-    axes[0, 1].set_title('RSK Algorithm: Unique Partitions Count')
-    axes[0, 1].set_xlabel('Column Index (m)')
-    axes[0, 1].set_ylabel('Row Index (n)')
-    plt.colorbar(im2, ax=axes[0, 1])
+    axes[0, 0].bar(labels, unique_counts, color=colors, alpha=0.7)
+    axes[0, 0].set_title('Grid Distribution Comparison')
+    axes[0, 0].set_ylabel('Number of Unique Grids')
+    axes[0, 0].grid(True, alpha=0.3)
     
-    # Jaccard similarity heatmap
-    im3 = axes[1, 0].imshow(jaccard_similarities, cmap='RdYlGn', aspect='auto', vmin=0, vmax=1)
-    axes[1, 0].set_title('Jaccard Similarity (1 = identical distributions)')
-    axes[1, 0].set_xlabel('Column Index (m)')
-    axes[1, 0].set_ylabel('Row Index (n)')
-    plt.colorbar(im3, ax=axes[1, 0])
+    # Add values on top of bars
+    for i, v in enumerate(unique_counts):
+        axes[0, 0].text(i, v + max(unique_counts) * 0.01, str(v), 
+                       ha='center', va='bottom', fontweight='bold')
     
-    # KL divergence heatmap
-    with np.errstate(invalid='ignore'):
-        im4 = axes[1, 1].imshow(kl_divergences, cmap='Reds', aspect='auto')
-    axes[1, 1].set_title('KL Divergence (0 = identical distributions)')
-    axes[1, 1].set_xlabel('Column Index (m)')
-    axes[1, 1].set_ylabel('Row Index (n)')
-    plt.colorbar(im4, ax=axes[1, 1])
+    # Plot 2: Entropy comparison
+    entropies = [stats_summary['push_entropy'], stats_summary['rsk_entropy']]
+    entropy_labels = ['Push-Block', 'RSK']
+    
+    axes[0, 1].bar(entropy_labels, entropies, color=['blue', 'red'], alpha=0.7)
+    axes[0, 1].set_title('Grid Distribution Entropy')
+    axes[0, 1].set_ylabel('Entropy (bits)')
+    axes[0, 1].grid(True, alpha=0.3)
+    
+    # Add values on top of bars
+    for i, v in enumerate(entropies):
+        axes[0, 1].text(i, v + max(entropies) * 0.01, f'{v:.3f}', 
+                       ha='center', va='bottom', fontweight='bold')
+    
+    # Plot 3: Top Push-Block grid frequencies
+    if top_push_grids:
+        push_probs = [count / stats_summary['simulations'] for grid, count in top_push_grids]
+        grid_indices = range(len(top_push_grids))
+        
+        axes[1, 0].bar(grid_indices, push_probs, color='blue', alpha=0.7)
+        axes[1, 0].set_title(f'Top {len(top_push_grids)} Push-Block Grid Configurations')
+        axes[1, 0].set_xlabel('Grid Configuration (ranked by frequency)')
+        axes[1, 0].set_ylabel('Probability')
+        axes[1, 0].grid(True, alpha=0.3)
+        
+        # Add probability labels
+        for i, prob in enumerate(push_probs):
+            axes[1, 0].text(i, prob + max(push_probs) * 0.01, f'{prob:.3f}', 
+                           ha='center', va='bottom', fontsize=8)
+    
+    # Plot 4: Top RSK grid frequencies
+    if top_rsk_grids:
+        rsk_probs = [count / stats_summary['simulations'] for grid, count in top_rsk_grids]
+        grid_indices = range(len(top_rsk_grids))
+        
+        axes[1, 1].bar(grid_indices, rsk_probs, color='red', alpha=0.7)
+        axes[1, 1].set_title(f'Top {len(top_rsk_grids)} RSK Grid Configurations')
+        axes[1, 1].set_xlabel('Grid Configuration (ranked by frequency)')
+        axes[1, 1].set_ylabel('Probability')
+        axes[1, 1].grid(True, alpha=0.3)
+        
+        # Add probability labels
+        for i, prob in enumerate(rsk_probs):
+            axes[1, 1].text(i, prob + max(rsk_probs) * 0.01, f'{prob:.3f}', 
+                           ha='center', va='bottom', fontsize=8)
     
     plt.tight_layout()
-    edge_text = " (excluding edges)" if ignore_edges else ""
-    plt.suptitle(f'Grid Comparison (Complete Partitions): X={X}, Y={Y}{edge_text}', fontsize=16, y=0.98)
+    plt.suptitle(f'Complete Grid Distribution Comparison: X={X}, Y={Y}', 
+                 fontsize=16, y=0.98)
     
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         print(f"Plot saved to: {save_path}")
     
     plt.show()
-    
-    plt.show()
 
 def print_grid_summary(stats_summary, X, Y):
     """
-    Print a summary of the grid comparison results for both algorithms using complete partitions.
+    Print a summary of the complete grid distribution comparison results.
     """
-    print(f"\nGrid Comparison Summary (Complete Partitions)")
+    print(f"\nComplete Grid Distribution Comparison Summary")
     print(f"=" * 70)
     print(f"Grid parameters: X={X}, Y={Y}")
     print(f"Grid size: {stats_summary['grid_size'][0]} x {stats_summary['grid_size'][1]}")
-    print(f"Total KL divergence: {stats_summary['total_kl_divergence']:.4f}")
-    print(f"Total Jaccard similarity: {stats_summary['total_jaccard_similarity']:.4f}")
-    print(f"Average KL divergence: {stats_summary['avg_kl_divergence']:.4f}")
-    print(f"Average Jaccard similarity: {stats_summary['avg_jaccard_similarity']:.4f}")
-    print(f"Maximum KL divergence: {stats_summary['max_kl_divergence']:.4f} at {stats_summary['max_kl_pos']}")
-    print(f"Minimum Jaccard similarity: {stats_summary['min_jaccard_similarity']:.4f} at {stats_summary['min_jaccard_pos']}")
+    print(f"Number of simulations: {stats_summary['simulations']}")
+    print(f"Push-Block unique grids: {stats_summary['push_block_unique']}")
+    print(f"RSK unique grids: {stats_summary['rsk_unique']}")
+    print(f"Common grids: {stats_summary['common_grids']}")
+    print(f"Total unique grids: {stats_summary['total_grids']}")
+    print(f"Jaccard similarity: {stats_summary['jaccard_similarity']:.4f}")
+    print(f"KL divergence: {stats_summary['kl_divergence']:.4f}" if stats_summary['kl_divergence'] != float('inf') else "KL divergence: ∞")
+    print(f"Push-Block entropy: {stats_summary['push_entropy']:.4f}")
+    print(f"RSK entropy: {stats_summary['rsk_entropy']:.4f}")
     
-    # Show top 5 positions with largest differences
-    stats = stats_summary['stats']
+    # Show top grid configurations
+    push_counts = stats_summary['push_counts']
+    rsk_counts = stats_summary['rsk_counts']
     
-    # Sort by KL divergence (excluding infinite values)
-    finite_kl_stats = [(pos, data) for pos, data in stats.items() 
-                       if data['kl_divergence'] != float('inf')]
-    sorted_kl = sorted(finite_kl_stats, key=lambda x: x[1]['kl_divergence'], reverse=True)
+    print(f"\nTop 5 Push-Block grid configurations:")
+    print(f"{'Rank':<6} {'Frequency':<12} {'Probability':<12} {'Grid Structure'}")
+    print(f"{'-'*80}")
     
-    # Sort by Jaccard similarity (ascending - less similar first)
-    sorted_jaccard = sorted(stats.items(), key=lambda x: x[1]['jaccard_similarity'])
+    for i, (grid, count) in enumerate(push_counts.most_common(5)):
+        prob = count / stats_summary['simulations']
+        grid_str = f"{len(grid)}x{len(grid[0])} grid" if grid else "Empty grid"
+        print(f"{i+1:<6} {count:<12} {prob:<12.4f} {grid_str}")
     
-    print(f"\nTop 5 positions with largest KL divergences:")
-    print(f"{'Position':<12} {'Push Unique':<12} {'RSK Unique':<12} {'KL Divergence':<15}")
-    print(f"{'-'*55}")
+    print(f"\nTop 5 RSK grid configurations:")
+    print(f"{'Rank':<6} {'Frequency':<12} {'Probability':<12} {'Grid Structure'}")
+    print(f"{'-'*80}")
     
-    for i, ((row, col), data) in enumerate(sorted_kl[:5]):
-        print(f"({row:2d},{col:2d})      {data['push_block_unique']:8d}     "
-              f"{data['rsk_unique']:8d}     {data['kl_divergence']:8.4f}")
+    for i, (grid, count) in enumerate(rsk_counts.most_common(5)):
+        prob = count / stats_summary['simulations']
+        grid_str = f"{len(grid)}x{len(grid[0])} grid" if grid else "Empty grid"
+        print(f"{i+1:<6} {count:<12} {prob:<12.4f} {grid_str}")
     
-    print(f"\nTop 5 positions with lowest Jaccard similarities:")
-    print(f"{'Position':<12} {'Push Unique':<12} {'RSK Unique':<12} {'Jaccard Sim.':<15}")
-    print(f"{'-'*55}")
+    # Check if the most common grids are the same
+    top_push = push_counts.most_common(1)[0][0] if push_counts else None
+    top_rsk = rsk_counts.most_common(1)[0] if rsk_counts else None
     
-    for i, ((row, col), data) in enumerate(sorted_jaccard[:5]):
-        print(f"({row:2d},{col:2d})      {data['push_block_unique']:8d}     "
-              f"{data['rsk_unique']:8d}     {data['jaccard_similarity']:8.4f}")
+    if top_push and top_rsk and top_push == top_rsk[0]:
+        print(f"\n✓ Both algorithms have the same most frequent grid configuration!")
+    else:
+        print(f"\n✗ The algorithms have different most frequent grid configurations.")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -357,19 +362,17 @@ Examples:
                            help='Enable debug output')
     
     # Grid-based comparison (new functionality)
-    grid_parser = subparsers.add_parser('grid', help='Compare algorithms across the full grid')
-    grid_parser.add_argument('--X', type=float, nargs='+', default=[0.5, 0.5],
-                           help='X parameters (space-separated). Default: 0.5 0.5')
-    grid_parser.add_argument('--Y', type=float, nargs='+', default=[0.5, 0.5],
-                           help='Y parameters (space-separated). Default: 0.5 0.5')
+    grid_parser = subparsers.add_parser('grid', help='Compare complete grid distributions between algorithms')
+    grid_parser.add_argument('--X', type=float, nargs='+', default=[0.3, 0.4],
+                           help='X parameters (space-separated). Default: 0.3 0.4 for 3x3 grid')
+    grid_parser.add_argument('--Y', type=float, nargs='+', default=[0.3, 0.4],
+                           help='Y parameters (space-separated). Default: 0.3 0.4 for 3x3 grid')
     grid_parser.add_argument('--simulations', type=int, default=1000,
                            help='Number of simulations. Default: 1000')
     grid_parser.add_argument('--plot', action='store_true',
-                           help='Show grid comparison heatmaps')
+                           help='Show grid distribution comparison plots')
     grid_parser.add_argument('--save', type=str,
                            help='Save plot to specified path')
-    grid_parser.add_argument('--ignore-edges', action='store_true',
-                           help='Ignore edge partitions (first/last rows/columns) in analysis')
     grid_parser.add_argument('--debug', action='store_true',
                            help='Enable debug output')
     
@@ -407,10 +410,7 @@ def path_based_comparison(args):
     rsk_partitions = [[] for _ in range(num_positions)]
 
     # build up distributions of complete partitions for the two samplers
-    for i in range(sim_count):
-        if i % (sim_count // 10) == 0 and i > 0:
-            print(f"Progress: {i}/{sim_count} ({100*i//sim_count}%)")
-            
+    for i in tqdm(range(sim_count), desc="Path Simulation", unit="sim"):
         push_block_path, rsk_path = sample_both_grids(X, Y, path, debug)
         
         # Make sure we have the expected number of partitions
@@ -433,24 +433,22 @@ def path_based_comparison(args):
         plot_partition_distributions(push_block_partitions[:min_len], rsk_partitions[:min_len], path)
 
     # Print summary statistics
-    print_partition_summary(push_block_partitions[:min_len], rsk_partitions[:min_len], path)
+    if debug:
+        print_partition_summary(push_block_partitions[:min_len], rsk_partitions[:min_len], path)
 
 def grid_based_comparison(args):
-    """Run the new grid-based comparison."""
+    """Run the grid-based comparison using complete grid distributions."""
     X, Y = args.X, args.Y
     sim_count = args.simulations
     debug = args.debug
     plot = args.plot
     save_path = args.save
-    ignore_edges = getattr(args, 'ignore_edges', False)  # Handle the hyphenated argument
     
-    print(f"Running grid-based comparison:")
+    print(f"Running grid-based comparison (complete grid distributions):")
     print(f"X={X}, Y={Y}, Simulations={sim_count}")
-    if ignore_edges:
-        print("Ignoring edge partitions in analysis")
     
     # Run the comparison
-    stats_summary = compare_full_grid_distributions(X, Y, sim_count, debug, ignore_edges)
+    stats_summary = compare_grid_distributions(X, Y, sim_count, debug)
     
     # Print summary
     print_grid_summary(stats_summary, X, Y)
@@ -556,8 +554,8 @@ def print_partition_summary(push_block_data, rsk_data, path):
     """
     Print a summary of the partition distribution comparison.
     """
-    print(f"\nPartition Distribution Summary for Path: {path}")
-    print("="*70)
+    # print(f"\nPartition Distribution Summary for Path: {path}")
+    # print("="*70)
     
     for step in range(len(push_block_data)):
         # Count partitions

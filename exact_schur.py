@@ -9,6 +9,7 @@ from math import factorial
 from collections import defaultdict
 import sympy as sp
 from sympy import symbols, expand, Poly
+from tqdm import tqdm
 
 def elementary_symmetric_polynomial(variables, k):
     """
@@ -265,10 +266,7 @@ def validate_against_exact_schur_weights(X, Y, sim_count=5000, max_parts=2, max_
     pb_frequencies = defaultdict(int)
     rsk_frequencies = defaultdict(int)
     
-    for sim in range(sim_count):
-        if sim % (sim_count // 10) == 0 and sim > 0:
-            print(f"Progress: {sim}/{sim_count}")
-        
+    for sim in tqdm(range(sim_count), desc="Exact Validation", unit="sim"):
         try:
             # Sample grids
             pb_grid = sample_push_block_grid(X, Y)
@@ -291,10 +289,7 @@ def validate_against_exact_schur_weights(X, Y, sim_count=5000, max_parts=2, max_
     theoretical_weights = {}
     total_theoretical_weight = 0
     
-    for i, seq in enumerate(partition_sequences):
-        if i % 100 == 0 and i > 0:
-            print(f"  Computing weight {i}/{len(partition_sequences)}")
-        
+    for i, seq in enumerate(tqdm(partition_sequences, desc="Computing weights", unit="seq")):
         try:
             weight = exact_schur_weight(seq, X, Y)
             theoretical_weights[seq] = weight

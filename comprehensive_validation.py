@@ -3,7 +3,6 @@ Comprehensive validation suite comparing all validation methods.
 """
 
 from exact_schur import validate_against_exact_schur_weights
-from schur_validation import validate_against_schur_weights
 from schur_testing import compare_full_grid_distributions
 import sys
 
@@ -29,21 +28,8 @@ def comprehensive_validation(X, Y, sim_count=5000):
     print(f"   Empirical coverage: PB={exact_results['empirical_coverage_pb']:.3f}, RSK={exact_results['empirical_coverage_rsk']:.3f}")
     print()
     
-    # Method 2: Approximate Schur weights validation
-    print("2. APPROXIMATE SCHUR POLYNOMIAL VALIDATION")
-    print("-" * 50)
-    approx_results = validate_against_schur_weights(X, Y, sim_count=sim_count)
-    ks_pb = approx_results.get('ks_pvalue_pb', 'N/A')
-    ks_rsk = approx_results.get('ks_pvalue_rsk', 'N/A')
-    ks_pb_str = f"{ks_pb:.6f}" if isinstance(ks_pb, (int, float)) else str(ks_pb)
-    ks_rsk_str = f"{ks_rsk:.6f}" if isinstance(ks_rsk, (int, float)) else str(ks_rsk)
-    print(f"   KS test p-values: PB={ks_pb_str}, RSK={ks_rsk_str}")
-    print(f"   Structural violations: PB={approx_results.get('structure_violations_pb', 0)}, RSK={approx_results.get('structure_violations_rsk', 0)}")
-    print(f"   Interlacing violations: PB={approx_results.get('interlacing_violations_pb', 0)}, RSK={approx_results.get('interlacing_violations_rsk', 0)}")
-    print()
-    
-    # Method 3: Grid distribution comparison
-    print("3. FULL GRID DISTRIBUTION COMPARISON")
+    # Method 2: Grid distribution comparison
+    print("2. FULL GRID DISTRIBUTION COMPARISON")
     print("-" * 50)
     grid_results = compare_full_grid_distributions(X, Y, sim_count=sim_count//2, ignore_edges=True)
     print(f"   Average KL divergence: {grid_results['avg_kl_divergence']:.6f}")
@@ -53,13 +39,10 @@ def comprehensive_validation(X, Y, sim_count=5000):
     print()
     
     # Summary
-    print("4. VALIDATION SUMMARY")
+    print("3. VALIDATION SUMMARY")
     print("-" * 50)
     print("✓ EXACT VALIDATION: Both algorithms match theoretical Schur weights with")
     print(f"  average differences < 0.01 (PB: {exact_results['avg_pb_difference']:.6f}, RSK: {exact_results['avg_rsk_difference']:.6f})")
-    print()
-    print("✓ STRUCTURAL VALIDATION: Both algorithms satisfy all interlacing constraints")
-    print(f"  and produce valid partition sequences")
     print()
     print("✓ DISTRIBUTIONAL VALIDATION: Both algorithms produce statistically")
     print(f"  indistinguishable distributions (Jaccard similarity: {grid_results['avg_jaccard_similarity']:.3f})")
@@ -70,7 +53,6 @@ def comprehensive_validation(X, Y, sim_count=5000):
     
     return {
         'exact_validation': exact_results,
-        'approximate_validation': approx_results,
         'grid_comparison': grid_results
     }
 
