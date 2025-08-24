@@ -23,24 +23,34 @@ def run_single_simulation(args_tuple):
         X = shared_X
         Y = shared_Y
     else:
-        X = np.array([x_i] * M)
-        Y = np.array([y_i] * N)
+        X = [x_i] * M  # Convert to list, not numpy array
+        Y = [y_i] * N  # Convert to list, not numpy array
 
     try:
         grid = sample_rsk_grid(X, Y)
-        lambda_1 = grid[-1][-1].part(1) if len(grid[-1][-1]._parts) > 0 else 0
+        # Fix: grid is (N+1) x (M+1), so the bottom-right corner is grid[N][M]
+        bottom_right_partition = grid[N][M]
+        lambda_1 = bottom_right_partition.part(1) if hasattr(bottom_right_partition, 'part') else 0
 
-        q = X
-        sub = (2 * q) / (1 - q) * N
+        # Fix: q should be a scalar value, not an array
+        q = x_i if shared_X is None else np.mean(shared_X)
+        
+        # Ensure all calculations return scalars
+        sub = (2 * q * N) / (1 - q) 
         sigma_q = (pow(q, 1/3) * pow(1 + q, 1/3)) / (1 - q)
         f_q = pow(q, 1/3) / (2 * pow(1 + q, 2/3))
 
-        res = (lambda_1 - sub) * pow(N, -1/3) / sigma_q / pow(f_q, 1/2)
+        p = q / (1 - q)
+        sigma = pow(p * (1 + p), 1/2)
 
-        return res
+        res = (lambda_1 - sub) * pow(N, -1/3) / sigma / pow(f_q, 1/2)
+
+        # Ensure we return a scalar float, not a numpy array
+        # return float(res)
+        return float(res)
     except Exception as e:
         print(f"RSK error: {e}")
-        return 0
+        return 0.0
 
 # Geometric-sampling helpers removed: script now uses RSK sampler only.
 
@@ -93,11 +103,11 @@ def main():
     shared_Y = None
     if use_random_q:
         print("Generating shared random parameters for RSK sampler...")
-        # For RSK sampler, create 1D arrays X and Y of random values
-        shared_X = np.random.uniform(0, 1, size=M)
-        shared_Y = np.random.uniform(0, 1, size=N)
-        print(f"Generated X array (length {M}) with values in range [{np.min(shared_X):.3f}, {np.max(shared_X):.3f}]")
-        print(f"Generated Y array (length {N}) with values in range [{np.min(shared_Y):.3f}, {np.max(shared_Y):.3f}]")
+        # For RSK sampler, create 1D lists (not numpy arrays) of random values
+        shared_X = [np.random.uniform(0, 1) for _ in range(M)]
+        shared_Y = [np.random.uniform(0, 1) for _ in range(N)]
+        print(f"Generated X array (length {M}) with values in range [{min(shared_X):.3f}, {max(shared_X):.3f}]")
+        print(f"Generated Y array (length {N}) with values in range [{min(shared_Y):.3f}, {max(shared_Y):.3f}]")
     
     # Smart parallel processing decision
     if num_processes == 1 or sim_count < 50:
@@ -138,6 +148,9 @@ def main():
     
     # Plot histogram
     if args.plot or args.save_plot:
+        # Convert to numpy array and ensure all values are scalars
+        max_sums_array = np.array([float(x) for x in max_sums])
+        
         plt.figure(figsize=(12, 8))
         
         # Create both histogram and smoothed density plot
@@ -146,8 +159,8 @@ def main():
             bins = args.bins
             print(f"Using manually specified {bins} bins")
         else:
-            unique_values = len(set(max_sums))
-            data_range = np.max(max_sums) - np.min(max_sums)
+            unique_values = len(set(max_sums_array))  # Now using the cleaned array
+            data_range = np.max(max_sums_array) - np.min(max_sums_array)
             
             # Choose number of bins intelligently
             if unique_values <= 20:
@@ -158,23 +171,21 @@ def main():
                 bins = min(50, int(data_range) + 1)
             else:
                 # Large range - use Sturges' rule or square root rule
-                # sturges_bins = int(np.ceil(np.log2(len(max_sums)) + 1))
-                # sqrt_bins = int(np.ceil(np.sqrt(len(max_sums))))
                 bins = min(unique_values, 100)  # Cap at 100 bins max
             
-            print(f"Auto-selected {bins} bins for {unique_values} unique values (range: {np.min(max_sums):.1f} - {np.max(max_sums):.1f})")
+            print(f"Auto-selected {bins} bins for {unique_values} unique values (range: {np.min(max_sums_array):.1f} - {np.max(max_sums_array):.1f})")
         
         # Create histogram with lower alpha for background
-        n, bins_edges, patches = plt.hist(max_sums, bins=bins, alpha=0.3, density=True, 
+        n, bins_edges, patches = plt.hist(max_sums_array, bins=bins, alpha=0.3, density=True, 
                                          edgecolor='black', linewidth=0.5, color='lightblue', 
                                          label='Histogram')
         
         # Create smoothed density plot using KDE (only if data has variance)
-        if np.std(max_sums) > 1e-10:  # Check if data has meaningful variance
-            kde = gaussian_kde(max_sums)
+        if np.std(max_sums_array) > 1e-10:  # Check if data has meaningful variance
+            kde = gaussian_kde(max_sums_array)
             
             # Create dense x-axis for smooth curve covering the full range
-            x_min, x_max = np.min(max_sums), np.max(max_sums)
+            x_min, x_max = np.min(max_sums_array), np.max(max_sums_array)
             x_range = x_max - x_min
             if x_range > 1e-10:  # Only create smooth curve if there's a meaningful range
                 x_smooth = np.linspace(x_min - 0.1 * x_range, x_max + 0.1 * x_range, 1000)
@@ -190,9 +201,9 @@ def main():
         else:
             print("Warning: Data has no variance - skipping KDE curve")
         
-        # Add statistics overlay
-        mean_val = np.mean(max_sums)
-        std_val = np.std(max_sums)
+        # Add statistics overlay - use the cleaned array
+        mean_val = np.mean(max_sums_array)
+        std_val = np.std(max_sums_array)
         plt.axvline(mean_val, color='red', linestyle='--', linewidth=2, 
                    label=f'Mean: {mean_val:.2f}')
         plt.axvline(mean_val + std_val, color='orange', linestyle='--', alpha=0.7,
@@ -208,7 +219,7 @@ def main():
         plt.grid(True, alpha=0.3)
         
         # Add text box with statistics
-        stats_text = f'Samples: {len(max_sums)}\nMean: {mean_val:.3f}\nStd: {std_val:.3f}\nMin: {np.min(max_sums):.1f}\nMax: {np.max(max_sums):.1f}'
+        stats_text = f'Samples: {len(max_sums_array)}\nMean: {mean_val:.3f}\nStd: {std_val:.3f}\nMin: {np.min(max_sums_array):.1f}\nMax: {np.max(max_sums_array):.1f}'
         plt.text(0.02, 0.98, stats_text, transform=plt.gca().transAxes, 
                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8),
                 verticalalignment='top', fontsize=10)
